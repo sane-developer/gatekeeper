@@ -4,7 +4,11 @@ mkdir -p build
 
 cd build || exit 1
 
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+if [ "$1" = "--debug" ] ; then
+  cmake -DCMAKE_BUILD_TYPE=Debug ..
+else
+  cmake ..
+fi
 
 make
 
