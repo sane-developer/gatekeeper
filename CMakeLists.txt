@@ -13,6 +13,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_DIR}/lib)
 set(PLUGIN_SRC_FILES)
 
 set(PLUGIN_LIB_SRC_FILES
+    ./src/utilities/flag_utils.c
+    ./src/utilities/flag_utils.h
     ./src/utilities/string_utils.c
     ./src/utilities/string_utils.h
 )
