@@ -1,20 +1,20 @@
 #include "flag_utils.h"
 
-char has_flag(const int source, const int target)
+char has_flag(const int src, const int target)
 {
     return (source & target) == target;
 }
 
-void set_flag(void* source, const int target)
+void set_flag(void* src, const int target)
 {
-    int* container = source;
+    int* flags = src;
 
-    *container |= target;
+    *flags |= target;
 }
 
-void remove_flag(void* source, const int target)
+void remove_flag(void* src, const int target)
 {
-    int* container = source;
+    int* flags = source;
 
-    *container &= ~target;
+    *flags &= ~target;
 }
