@@ -25,7 +25,7 @@ void log_critical(const char *format, ...)
 
     va_start(args, format);
 
-    log_message("CRITICAL: ", format, &args);
+    log_message("CRITICAL", format, &args);
 }
 
 void log_warning(const char *format, ...)
@@ -34,7 +34,7 @@ void log_warning(const char *format, ...)
 
     va_start(args, format);
 
-    log_message("WARNING: ", format, &args);
+    log_message("WARNING", format, &args);
 }
 
 void log_info(const char *format, ...)
@@ -43,5 +43,5 @@ void log_info(const char *format, ...)
 
     va_start(args, format);
 
-    log_message("INFO: ", format, &args);
+    log_message("INFO", format, &args);
 }
