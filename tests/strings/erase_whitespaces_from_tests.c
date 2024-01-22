@@ -15,7 +15,7 @@ test_input_t;
 
 static inline void run_test_case(const test_input_t* input)
 {
-    printf("Running [%s] test case.", input->label);
+    printf("Running [%s] test case.\n", input->label);
 
     string_t* scattered_string = string_from_string_literal(input->entry);
     string_t* condensed_string = string_from_size(input->dst_capacity);

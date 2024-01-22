@@ -15,7 +15,7 @@ test_input_t;
 
 static inline void run_test_case(const test_input_t* input)
 {
-    printf("Running [%s] test case.", input->label);
+    printf("Running [%s] test case.\n", input->label);
 
     string_t* src = string_from_string_literal(input->entry);
     string_t* dst = string_from_size(input->dst_capacity);
@@ -47,7 +47,7 @@ static inline void run_test_case(const test_input_t* input)
     assert(has_yoinked_contents_from_string == input->expected_return_value);
     assert(has_yoinked_expected_contents_from_string == input->expected_yoink_of_contents);
 
-    printf("Successfully passed [%s] test case.\n", input->label);
+    printf("Successfully passed [%s] test case.\n\n", input->label);
 }
 
 static inline void entry_is_null()
