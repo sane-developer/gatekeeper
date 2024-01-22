@@ -2,7 +2,7 @@
 #include "logging_policy.h"
 #include "../allocators/allocator.h"
 
-logging_policy_t* allocate_logging_policy()
+logging_policy_t* create_logging_policy()
 {
     const size_t policy_size = sizeof(logging_policy_t);
 
