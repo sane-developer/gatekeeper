@@ -9,7 +9,7 @@
 ///
 typedef enum
 {
-    undefined,
+    undefined_strategy,
     accepted_requests_strategy,
     denied_requests_strategy
 }

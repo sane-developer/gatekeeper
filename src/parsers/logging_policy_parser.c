@@ -17,7 +17,7 @@ static inline logging_policy_parser_target_t map_label_to_parser_target(const st
         return denied_requests_strategy;
     }
 
-    return undefined;
+    return undefined_strategy;
 }
 
 static inline logging_option_t map_label_to_strategy_option(const string_t* label)
@@ -62,12 +62,12 @@ static inline logging_option_t map_label_to_strategy_option(const string_t* labe
         return include_sasl_method;
     }
 
-    return unsupported;
+    return unsupported_option;
 }
 
 static inline char has_target(const logging_policy_parser_state_t* state)
 {
-    return state->target != undefined;
+    return state->target != undefined_strategy;
 }
 
 static inline void set_parser_target(logging_policy_parser_state_t* state, logging_policy_parser_target_t target)
@@ -103,7 +103,7 @@ logging_policy_parser_events_t parse_logging_policy_file(void* policy, FILE* fil
         .line = 0,
         .policy = (logging_policy_t*) policy,
         .events = 0,
-        .target = undefined
+        .target = undefined_strategy
     };
 
     string_t* entry = string_from_size(ENTRY_SIZE);
@@ -128,7 +128,7 @@ logging_policy_parser_events_t parse_logging_policy_file(void* policy, FILE* fil
 
         logging_policy_parser_target_t target = map_label_to_parser_target(label);
 
-        if (target != undefined)
+        if (target != undefined_strategy)
         {
             set_parser_target(&state, target);
             continue;
@@ -141,7 +141,7 @@ logging_policy_parser_events_t parse_logging_policy_file(void* policy, FILE* fil
 
         logging_option_t option = map_label_to_strategy_option(label);
 
-        if (option != unsupported)
+        if (option != unsupported_option)
         {
             add_option_to_strategy(&state, option);
             continue;
