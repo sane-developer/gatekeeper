@@ -1,44 +1,63 @@
+### Metadata
+
 cmake_minimum_required(VERSION 3.22)
 
 project(gatekeeper C)
 
 set(CMAKE_C_STANDARD 11)
-
 set(BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR}/bin)
-
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_DIR}/lib)
 
-set(PLUGIN_SRC_FILES)
+### Library
 
-set(PLUGIN_LIB_SRC_FILES
-    ./src/utilities/flag_utils.c
-    ./src/utilities/flag_utils.h
-    ./src/utilities/string_utils.c
-    ./src/utilities/string_utils.h
+file(GLOB LIB_FILES
+    ./src/parsers/*.c
+    ./src/types/*.c
+    ./src/utilities/*.c
+    ./src/validators/*.c
 )
 
-set(IS_NUMBER_TESTS_SRC_FILES
-    ./tests/utilities/is_number_tests.c
+add_library(gatekeeper_sdk SHARED ${LIB_FILES})
+
+### Plugin
+
+file(GLOB PLUGIN_FILES
+    ./src/plugin.c
 )
 
-set(ERASE_WHITESPACES_TESTS_SRC_FILES
-    ./tests/utilities/erase_whitespaces_tests.c
+file(GLOB PLUGIN_DEPENDENCIES
+    ./src/allocators/slapd_allocator.c
+    ./src/loggers/slapd_logger.c
 )
 
-set(EXTRACT_KEY_VALUE_PAIR_TESTS_SRC_FILES
-    ./tests/utilities/extract_key_value_pair_tests.c
+add_library(gatekeeper_plugin SHARED ${PLUGIN_FILES} ${PLUGIN_DEPENDENCIES})
+target_link_libraries(gatekeeper_plugin gatekeeper_sdk)
+
+### Tests
+
+file(GLOB PARSERS_TESTS
+    ./tests/parsers/*.c
 )
 
-add_library(gatekeeper_lib SHARED ${PLUGIN_LIB_SRC_FILES})
-#target_compile_options(gatekeeper_lib PRIVATE -DDISABLE_LOGGING)
+file(GLOB STRINGS_TESTS
+    ./tests/strings/*.c
+)
 
-add_executable(is_number_tests ${IS_NUMBER_TESTS_SRC_FILES})
-target_link_libraries(is_number_tests gatekeeper_lib)
+file(GLOB TEST_DEPENDENCIES
+    ./src/allocators/std_allocator.c
+    ./src/loggers/std_logger.c
+)
 
-add_executable(erase_whitespaces_tests ${ERASE_WHITESPACES_TESTS_SRC_FILES})
-target_link_libraries(erase_whitespaces_tests gatekeeper_lib)
+foreach(TEST_FILE ${PARSERS_TESTS})
+    get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
+    add_executable(${TEST_NAME} ${TEST_FILE} ${TEST_DEPENDENCIES})
+    target_compile_options(${TEST_NAME} PRIVATE -DDISABLE_LOGGING)
+    target_link_libraries(${TEST_NAME} gatekeeper_sdk)
+endforeach()
 
-add_executable(extract_key_value_tests ${EXTRACT_KEY_VALUE_PAIR_TESTS_SRC_FILES})
-target_link_libraries(extract_key_value_tests gatekeeper_lib)
+foreach(TEST_FILE ${STRINGS_TESTS})
+    get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
+    add_executable(${TEST_NAME} ${TEST_FILE} ${TEST_DEPENDENCIES})
+    target_link_libraries(${TEST_NAME} gatekeeper_sdk)
+endforeach()
