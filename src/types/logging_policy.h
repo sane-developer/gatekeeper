@@ -32,7 +32,7 @@ logging_policy_t;
 /// @brief Allocates the logging policy on the heap.
 /// @return The pointer to newly allocated logging policy.
 ///
-logging_policy_t* allocate_logging_policy();
+logging_policy_t* create_logging_policy();
 
 ///
 /// @brief Disposes the allocated logging policy.
