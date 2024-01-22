@@ -1,5 +1,5 @@
-#ifndef GATEKEEPER_FLAGS_UTILS_H
-#define GATEKEEPER_FLAGS_UTILS_H
+#ifndef GATEKEEPER_FLAGS_H
+#define GATEKEEPER_FLAGS_H
 
 ///
 /// @brief Determines whether a specific flag is set in the source.
