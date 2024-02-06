@@ -6,7 +6,8 @@
 ///
 typedef enum
 {
-    unsupported_option = -1,
+    uninitialized_strategy = -1,
+    unsupported_option = 0,
     ignore_logging = 1 << 0,
     include_rule_name = 1 << 1,
     include_user_dn = 1 << 2,
