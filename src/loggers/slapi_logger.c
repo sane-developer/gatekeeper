@@ -5,11 +5,6 @@
 
 static inline void log_message(const int severity, const char *format, va_list* args)
 {
-    #ifdef DISABLE_LOGGING
-        va_end(*args);
-        return;
-    #endif
-
     // TODO: Implement via dirsrv API.
 
     va_end(*args);
@@ -17,6 +12,10 @@ static inline void log_message(const int severity, const char *format, va_list* 
 
 void log_critical(const char *format, ...)
 {
+    #ifdef DISABLE_LOGGING
+        return;
+    #endif
+
     va_list args;
 
     va_start(args, format);
@@ -26,6 +25,10 @@ void log_critical(const char *format, ...)
 
 void log_warning(const char *format, ...)
 {
+    #ifdef DISABLE_LOGGING
+        return;
+    #endif
+
     va_list args;
 
     va_start(args, format);
@@ -35,6 +38,10 @@ void log_warning(const char *format, ...)
 
 void log_info(const char *format, ...)
 {
+    #ifdef DISABLE_LOGGING
+        return;
+    #endif
+
     va_list args;
 
     va_start(args, format);
