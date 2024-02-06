@@ -1,23 +1,34 @@
 #!/bin/bash
 
-BUILD_TYPE=""
+args=("$@")
+build_type="Release"
+cmake_args=".."
 
-mkdir -p build
+function has_flag() {
+  for arg in "${args[@]}"; do
+    if [[ "$arg" == "$1" ]]; then
+      return 0 
+    fi
+  done
 
-cd build || exit 1
+  return 1
+}
 
-if [ "$1" = "--debug" ] ; then
-  BUILD_TYPE="Debug"
-  cmake -DCMAKE_BUILD_TYPE=Debug ..
-else
-  BUILD_TYPE="Release"
-  cmake ..
+if has_flag "-d"; then
+  build_type="Debug"
+  cmake_args="-DCMAKE_BUILD_TYPE=Debug .."
 fi
+
+mkdir -p build || (echo "Could not create build dir." && exit 1)
+
+cd build || (echo "Could not cd into build dir." && exit 1)
+
+cmake $cmake_args || (echo "CMake failed." && exit 1)
 
 make
 
-if [ $? -eq 0 ]; then
-  echo "$BUILD_TYPE build succeeded"
+if [[ $? -eq 0 ]]; then
+  echo "$build_type build succeeded."
 else
-  echo "$BUILD_TYPE build failed"
+  echo "$build_type build failed."
 fi
