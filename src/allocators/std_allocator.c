@@ -1,22 +1,21 @@
+#include <assert.h>
 #include <stdlib.h>
 #include "allocator.h"
 
 void* allocate_memory(size_t size)
 {
-    if (size == 0)
-    {
-        return NULL;
-    }
+    assert(size > 0 && "Memory block size must be larger than 0.");
 
-    return malloc(size);
+    void* block = malloc(size);
+
+    assert(block && "Could not allocate memory block of requested size.");
+
+    return block;
 }
 
 void free_memory(void *ptr)
 {
-    if (ptr == NULL)
-    {
-        return;
-    }
+    assert(ptr && "Attempted to free a NULL pointer.");
 
     free(ptr);
 }
