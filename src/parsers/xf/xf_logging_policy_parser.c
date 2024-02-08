@@ -1,33 +1,10 @@
 #include <stdio.h>
-#include "../logging_policy_parser.h"
+#include "xf_logging_policy_parser.h"
 #include "../../loggers/logger.h"
 #include "../../utilities/flags.h"
 #include "../../utilities/string.h"
 
-typedef enum
-{
-    found_accepted_requests_strategy_label = 1 << 0,
-    found_denied_requests_strategy_label = 1 << 1
-}
-parser_events_t;
-
-typedef enum
-{
-    undefined_strategy,
-    accepted_requests_strategy,
-    denied_requests_strategy
-}
-parser_target_t;
-
-typedef struct
-{
-    size_t line;
-    parser_events_t events;
-    parser_target_t target;
-}
-parser_state_t;
-
-static inline parser_target_t map_label_to_parser_target(const string_t* label)
+static inline xf_lpp_target_t map_label_to_parser_target(const string_t* label)
 {
     if (matches_string_literal(label, "accepted_requests_strategy"))
     {
@@ -89,28 +66,15 @@ static inline logging_option_t map_label_to_strategy_option(const string_t* labe
 
 static inline void signal_out_of_scope_entry(size_t line, const string_t* entry)
 {
-    log_info("Found entry outside any strategy declaration scope at line %zu [%s].", line, entry->item);
+    log_warning("[Line %zu] [Out of scope] %s.", line, entry->item);
 }
 
 static inline void signal_unsupported_option(size_t line, const string_t* entry)
 {
-    log_info("Found unsupported option declaration at line %zu [%s].", line, entry->item);
+    log_warning("[Line %zu] [Unsupported] %s.", line, entry->item);
 }
 
-static inline void signal_critical_issues(parser_events_t events)
-{
-    if (!has_flag(events, found_accepted_requests_strategy_label))
-    {
-        log_critical("Could not find accepted requests strategy configuration.");
-    }
-
-    if (!has_flag(events, found_denied_requests_strategy_label))
-    {
-        log_critical("Could not find denied requests strategy configuration.");
-    }
-}
-
-static inline void set_parser_target(parser_state_t* state, parser_target_t target)
+static inline void set_parser_target(xf_lpp_state_t* state, xf_lpp_target_t target)
 {
     if (target == accepted_requests_strategy)
     {
@@ -124,7 +88,7 @@ static inline void set_parser_target(parser_state_t* state, parser_target_t targ
     state->target = target;
 }
 
-static inline void add_option_to_strategy(logging_policy_t* policy, parser_target_t target, logging_option_t option)
+static inline void add_option_to_strategy(logging_policy_t* policy, xf_lpp_target_t target, logging_option_t option)
 {
     if (target == accepted_requests_strategy)
     {
@@ -136,32 +100,39 @@ static inline void add_option_to_strategy(logging_policy_t* policy, parser_targe
     }
 }
 
-logging_policy_t* parse_logging_policy(void* resource)
+xf_lpp_output_t parse_logging_policy(const xf_lpp_args_t* args)
 {
-    FILE* file = (FILE*) resource;
+    FILE* policy_file = fopen(args->path, "r");
 
-    logging_policy_t* policy = create_logging_policy();
+    if (!policy_file)
+    {
+        return (xf_lpp_output_t)
+        {
+            .has_parsed = 0,
+            .events = 0
+        };
+    }
 
-    parser_state_t state =
+    xf_lpp_state_t state =
     {
         .line = 0,
         .events = 0,
         .target = undefined_strategy
     };
 
-    const size_t entry_length = 100;
+    string_t* scattered = string_from_size(100);
 
-    string_t* scattered = string_from_size(entry_length);
-
-    string_t* trimmed = string_from_size(entry_length);
+    string_t* trimmed = string_from_size(100);
 
     while (1)
     {
+        state.line++;
+        
         remove_contents(scattered);
 
         remove_contents(trimmed);
 
-        if (fgets(scattered->item, scattered->size, file) == NULL)
+        if (fgets(scattered->item, (int) scattered->size, policy_file) == NULL)
         {
             break;
         }
@@ -173,7 +144,7 @@ logging_policy_t* parse_logging_policy(void* resource)
             continue;
         }
 
-        const parser_target_t target = map_label_to_parser_target(trimmed);
+        const xf_lpp_target_t target = map_label_to_parser_target(trimmed);
 
         if (target != undefined_strategy)
         {
@@ -191,7 +162,7 @@ logging_policy_t* parse_logging_policy(void* resource)
 
         if (option != unsupported_option)
         {
-            add_option_to_strategy(policy, state.target, option);
+            add_option_to_strategy(args->policy, state.target, option);
             continue;
         }
 
@@ -202,9 +173,42 @@ logging_policy_t* parse_logging_policy(void* resource)
 
     dispose_string(trimmed);
 
-    signal_critical_issues(state.events);
+    fclose(policy_file);
 
-    fclose(file);
+    return (xf_lpp_output_t)
+    {
+        .has_parsed = 1,
+        .events = state.events
+    };
+}
 
-    return policy;
+char validate_logging_policy(const xf_lpv_args_t* args)
+{
+    char is_valid = 1;
+
+    if (!has_flag(args->events, found_accepted_requests_strategy_label))
+    {
+        log_critical("[Not found] Accepted requests strategy configuration.");
+        is_valid = 0;
+    }
+
+    if (!has_flag(args->events, found_denied_requests_strategy_label))
+    {
+        log_critical("[Not found] Denied requests strategy configuration.");
+        is_valid = 0;
+    }
+
+    if (args->policy->accepted_requests_strategy == uninitialized_strategy)
+    {
+        log_critical("[Unassigned] Accepted requests strategy configuration.");
+        is_valid = 0;
+    }
+
+    if (args->policy->denied_requests_strategy == uninitialized_strategy)
+    {
+        log_critical("[Unassigned] Denied requests strategy configuration.");
+        is_valid = 0;
+    }
+
+    return is_valid;
 }

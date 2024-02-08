@@ -5,9 +5,31 @@
 
 ///
 /// @brief
-/// @param resource
+///
+struct logging_policy_parser_args_t;
+
+///
+/// @brief
+///
+struct logging_policy_parser_output_t;
+
+///
+/// @brief
+///
+struct logging_policy_validator_args_t;
+
+///
+/// @brief
+/// @param args
 /// @return
 ///
-logging_policy_t* parse_logging_policy(void* resource);
+struct logging_policy_parser_output_t parse_logging_policy(const struct logging_policy_parser_args_t* args);
+
+///
+/// @brief
+/// @param args
+/// @return
+///
+char validate_logging_policy(const struct logging_policy_validator_args_t* args);
 
 #endif
