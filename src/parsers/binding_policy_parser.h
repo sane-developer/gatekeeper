@@ -30,6 +30,6 @@ struct binding_policy_parser_output_t parse_binding_policy(const struct binding_
 /// @param args
 /// @return
 ///
-char validate_binding_policy(const struct binding_policy_validator_args_t* args);
+int validate_binding_policy(const struct binding_policy_validator_args_t* args);
 
 #endif

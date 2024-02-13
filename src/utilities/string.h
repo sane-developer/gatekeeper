@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include "array.h"
 
 ///
 /// @brief Represents a mutable character buffer.
@@ -41,7 +42,7 @@ void dispose_string(string_t* string);
 /// @return 1 when the string is empty; otherwise, 0.
 /// @remark 1 is also returned in case the string or its buffer is NULL.
 ///
-char is_empty(const string_t* string);
+int is_empty(const string_t* string);
 
 ///
 /// @brief Determines whether the strings are equal.
@@ -49,7 +50,7 @@ char is_empty(const string_t* string);
 /// @param right The second string.
 /// @return 1 when the contents of both strings are equal; otherwise 0.
 ///
-char matches_string(const string_t* left, const string_t* right);
+int matches_string(const string_t* left, const string_t* right);
 
 ///
 /// @brief Determines whether the strings are equal.
@@ -57,7 +58,7 @@ char matches_string(const string_t* left, const string_t* right);
 /// @param right The string literal.
 /// @return 1 when the contents of both strings are equal; otherwise 0.
 ///
-char matches_string_literal(const string_t* left, const char* right);
+int matches_string_literal(const string_t* left, const char* right);
 
 ///
 /// @brief Clears the contents of the string.
@@ -115,5 +116,14 @@ void erase_whitespaces_from_string_literal(const char* src, string_t* dst);
 /// @return
 ///
 void split_by_delimiter(const string_t* src, string_t* key, string_t* value, char delimiter);
+
+///
+/// @brief
+/// @param src
+/// @param values
+/// @param delimiter
+/// @return
+///
+void split_multiple_by_delimiter(const string_t* src, array_t* values, char delimiter);
 
 #endif

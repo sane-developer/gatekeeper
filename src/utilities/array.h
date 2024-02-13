@@ -25,7 +25,7 @@ typedef void (*cleanup_array_internals)(void* item);
 /// @param item_size
 /// @return
 ///
-void* array_from_size(size_t capacity, size_t item_size);
+void* array_from_size(size_t capacity);
 
 ///
 /// @brief
@@ -43,8 +43,23 @@ void dispose_simple_array(void* array);
 ///
 /// @brief
 /// @param array
+/// @param index
+/// @return
+///
+void* get_item_from_array(void* array, size_t index);
+
+///
+/// @brief
+/// @param array
+/// @return
+///
+void* get_last_item_from_array(void* array);
+
+///
+/// @brief
+/// @param array
 /// @param item
 ///
-void append_item(void* array, void* item);
+void append_item_to_array(void* array, void* item);
 
 #endif
