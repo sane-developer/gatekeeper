@@ -78,11 +78,11 @@ static inline void set_parser_target(xf_lpp_state_t* state, xf_lpp_target_t targ
 {
     if (target == accepted_requests_strategy)
     {
-        enable_flag(&state->events, found_accepted_requests_strategy_label);
+        disable_flag(&state->errors, failed_to_locate_ars_label);
     }
     else
     {
-        enable_flag(&state->events, found_denied_requests_strategy_label);
+        disable_flag(&state->errors, failed_to_locate_drs_label);
     }
 
     state->target = target;
@@ -102,49 +102,62 @@ static inline void add_option_to_strategy(logging_policy_t* policy, xf_lpp_targe
 
 xf_lpp_output_t parse_logging_policy(const xf_lpp_args_t* args)
 {
+    logging_policy_t* policy = create_logging_policy();
+
+    if (!policy)
+    {
+        return (xf_lpp_output_t)
+        {
+            .errors = failed_to_allocate_logging_policy,
+            .policy = NULL
+        };
+    }
+
     FILE* policy_file = fopen(args->path, "r");
 
     if (!policy_file)
     {
+        dispose_logging_policy(policy);
+
         return (xf_lpp_output_t)
         {
-            .has_parsed = 0,
-            .events = 0
+            .errors = failed_to_open_logging_policy_file,
+            .policy = NULL
         };
     }
 
     xf_lpp_state_t state =
     {
         .line = 0,
-        .events = 0,
+        .errors = failed_to_locate_ars_label | failed_to_locate_drs_label,
         .target = undefined_strategy
     };
 
-    string_t* scattered = string_from_size(100);
+    string_t* raw = string_from_size(100);
 
-    string_t* trimmed = string_from_size(100);
+    string_t* label = string_from_size(100);
 
     while (1)
     {
         state.line++;
         
-        remove_contents(scattered);
+        remove_contents(raw);
 
-        remove_contents(trimmed);
+        remove_contents(label);
 
-        if (fgets(scattered->item, (int) scattered->size, policy_file) == NULL)
+        if (fgets(raw->item, (int) raw->size, policy_file) == NULL)
         {
             break;
         }
 
-        erase_whitespaces_from_string(scattered, trimmed);
+        erase_whitespaces_from_string(raw, label);
 
-        if (is_empty(trimmed))
+        if (is_empty(label))
         {
             continue;
         }
 
-        const xf_lpp_target_t target = map_label_to_parser_target(trimmed);
+        const xf_lpp_target_t target = map_label_to_parser_target(label);
 
         if (target != undefined_strategy)
         {
@@ -154,45 +167,57 @@ xf_lpp_output_t parse_logging_policy(const xf_lpp_args_t* args)
 
         if (state.target == undefined_strategy)
         {
-            signal_out_of_scope_entry(state.line, trimmed);
+            signal_out_of_scope_entry(state.line, label);
             continue;
         }
 
-        const logging_option_t option = map_label_to_strategy_option(trimmed);
+        const logging_option_t option = map_label_to_strategy_option(label);
 
         if (option != unsupported_option)
         {
-            add_option_to_strategy(args->policy, state.target, option);
+            add_option_to_strategy(policy, state.target, option);
             continue;
         }
 
-        signal_unsupported_option(state.line, trimmed);
+        signal_unsupported_option(state.line, label);
     }
 
-    dispose_string(scattered);
+    dispose_string(raw);
 
-    dispose_string(trimmed);
+    dispose_string(label);
 
     fclose(policy_file);
 
     return (xf_lpp_output_t)
     {
-        .has_parsed = 1,
-        .events = state.events
+        .errors = state.errors,
+        .policy = policy
     };
 }
 
-char validate_logging_policy(const xf_lpv_args_t* args)
+int validate_logging_policy(const xf_lpv_args_t* args)
 {
     char is_valid = 1;
 
-    if (!has_flag(args->events, found_accepted_requests_strategy_label))
+    if (has_flag(args->errors, failed_to_allocate_logging_policy))
+    {
+        log_critical("Unable to allocate the logging policy structure.");
+        return 1;
+    }
+
+    if (has_flag(args->errors, failed_to_open_logging_policy_file))
+    {
+        log_critical("Unable to open the policy configuration file.");
+        return 1;
+    }
+
+    if (has_flag(args->errors, failed_to_locate_ars_label))
     {
         log_critical("[Not found] Accepted requests strategy configuration.");
         is_valid = 0;
     }
 
-    if (!has_flag(args->events, found_denied_requests_strategy_label))
+    if (has_flag(args->errors, failed_to_locate_drs_label))
     {
         log_critical("[Not found] Denied requests strategy configuration.");
         is_valid = 0;

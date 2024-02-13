@@ -51,42 +51,33 @@ int main(int argc, char** argv)
 
     assert(path && "Path to policy file was NULL.");
 
-    logging_policy_t* policy = create_logging_policy();
-
     xf_lpp_args_t parser_args =
     {
-        .path = path,
-        .policy = policy,
+        .path = path
     };
 
     xf_lpp_output_t output = parse_logging_policy(&parser_args);
 
-    if (!output.has_parsed)
-    {
-        log_critical("Unable to open the policy configuration file.");
-        return 1;
-    }
-
     xf_lpv_args_t validator_args =
     {
-        .events = output.events,
-        .policy = policy,
+        .errors = output.errors,
+        .policy = output.policy,
     };
 
-    char is_valid = validate_logging_policy(&validator_args);
+    int is_valid = validate_logging_policy(&validator_args);
 
     if (is_valid)
     {
-        report_strategy_options("accepted_requests_strategy", policy->accepted_requests_strategy);
+        report_strategy_options("accepted_requests_strategy", output.policy->accepted_requests_strategy);
 
-        report_strategy_options("denied_requests_strategy", policy->denied_requests_strategy);
+        report_strategy_options("denied_requests_strategy", output.policy->denied_requests_strategy);
 
-        log_info("\nFile contains valid logging policy based on xf standard.");
+        log_info("File contains valid logging policy based on xf standard.");
     }
     else
     {
-        log_critical("\nFile contains invalid logging policy based on xf standard.");
+        log_critical("File contains invalid logging policy based on xf standard.");
     }
 
-    dispose_logging_policy(policy);
+    dispose_logging_policy(output.policy);
 }

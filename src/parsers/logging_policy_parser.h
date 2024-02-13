@@ -30,6 +30,6 @@ struct logging_policy_parser_output_t parse_logging_policy(const struct logging_
 /// @param args
 /// @return
 ///
-char validate_logging_policy(const struct logging_policy_validator_args_t* args);
+int validate_logging_policy(const struct logging_policy_validator_args_t* args);
 
 #endif

@@ -7,11 +7,9 @@ logging_policy_t* create_logging_policy()
 
     logging_policy_t* policy = allocate_memory(policy_size);
 
-    *policy = (logging_policy_t)
-    {
-        .accepted_requests_strategy = uninitialized_strategy,
-        .denied_requests_strategy = uninitialized_strategy
-    };
+    policy->accepted_requests_strategy = uninitialized_strategy;
+
+    policy->denied_requests_strategy = uninitialized_strategy;
 
     return policy;
 }

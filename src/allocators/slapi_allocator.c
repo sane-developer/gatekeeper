@@ -10,6 +10,4 @@ void* allocate_memory(size_t size)
 void free_memory(void *ptr)
 {
     // TODO: Implement using the dirsrv API.
-
-    return;
 }
