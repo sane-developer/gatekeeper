@@ -1,34 +1,29 @@
 #!/bin/bash
 
-args=("$@")
-build_type="Release"
-cmake_args=".."
+#
+#  Creates build directory for the plugin.
+#
 
-function has_flag() {
-  for arg in "${args[@]}"; do
-    if [[ "$arg" == "$1" ]]; then
-      return 0 
-    fi
-  done
+mkdir -p build
 
-  return 1
-}
+#
+#  Moves to the build directory of the plugin.
+#
 
-if has_flag "-d"; then
-  build_type="Debug"
-  cmake_args="-DCMAKE_BUILD_TYPE=Debug .."
+cd build
+
+#
+#  Builds CMake into Makefile.
+#
+
+if [[ "$1" == "-d" ]] ; then
+  cmake -DCMAKE_BUILD_TYPE=Debug ..
+else
+  cmake ..
 fi
 
-mkdir -p build || (echo "Could not create build dir." && exit 1)
-
-cd build || (echo "Could not cd into build dir." && exit 1)
-
-cmake $cmake_args || (echo "CMake failed." && exit 1)
+#
+#  Compiles the project targets.
+#
 
 make
-
-if [[ $? -eq 0 ]]; then
-  echo "$build_type build succeeded."
-else
-  echo "$build_type build failed."
-fi
