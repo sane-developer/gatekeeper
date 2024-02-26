@@ -1,13 +1,15 @@
+#include <dirsrv/slapi-plugin.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include "logger.h"
 
 static inline void invoke_logger(const int severity, const char* format, va_list* args)
 {
-    (void) severity;
-    (void) format;
-    (void) args;
+    char buffer[1024];
 
-    // TODO: Implement via dirsrv API.
+    vsnprintf(buffer, sizeof(buffer), format, *args);
+
+    slapi_log_error(severity, "gatekeeper", "%s\n", buffer);
 }
 
 void log_critical(const char* format, ...)
@@ -16,8 +18,8 @@ void log_critical(const char* format, ...)
 
     va_start(args, format);
 
-    // TODO: Implement via dirsrv API: invoke_logger(SLAPI_CRITICAL, format, &args);
-
+    invoke_logger(SLAPI_LOG_CRIT, format, &args);
+    
     va_end(args);
 }
 
@@ -27,7 +29,7 @@ void log_warning(const char* format, ...)
 
     va_start(args, format);
 
-    // TODO: Implement via dirsrv API: invoke_logger(SLAPI_WARNING, format, &args);
+    invoke_logger(SLAPI_LOG_WARNING, format, &args);
 
     va_end(args);
 }
@@ -38,7 +40,7 @@ void log_info(const char* format, ...)
 
     va_start(args, format);
 
-    // TODO: Implement via dirsrv API: invoke_logger(SLAPI_INFO, format, &args);
+    invoke_logger(SLAPI_LOG_INFO, format, &args);
 
     va_end(args);
 }

@@ -7,7 +7,7 @@
 /// @param flag The flag in question.
 /// @return 1, when the flag is enabled; otherwise, 0.
 ///
-#define has_flag(src, flag) (src) & (flag) == (flag)
+#define has_flag(src, flag) ((src) & (flag)) == (flag)
 
 ///
 /// @brief Enables the specified flag.
