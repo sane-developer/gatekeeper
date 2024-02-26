@@ -2,7 +2,7 @@
 #  Specifies the required version of CMake.
 #
 
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.20)
 
 #
 #  Defines the plugin project metadata.
@@ -15,6 +15,12 @@ project(gatekeeper LANGUAGES C)
 #
 
 set(CMAKE_C_STANDARD 11)
+
+#
+#  Lets the LSP get a hang of the header files.
+#
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #
 #  Defines the target directories for libs and executables.

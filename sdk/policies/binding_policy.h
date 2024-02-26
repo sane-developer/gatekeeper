@@ -1,7 +1,7 @@
 #ifndef GATEKEEPER_BINDING_POLICY_H
 #define GATEKEEPER_BINDING_POLICY_H
 
-#include "array.h"
+#include "../array/array.h"
 
 ///
 /// @brief Represents
