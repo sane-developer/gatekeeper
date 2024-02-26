@@ -3,9 +3,9 @@
 
 #include <time.h>
 #include <dirsrv/slapi-plugin.h>
-#include "../loggers/logger.h"
-#include "../policies/binding_policy.h"
-#include "../policies/logging_policy.h"
+#include "logger.h"
+#include "binding_policy.h"
+#include "logging_policy.h"
 
 ///
 /// @brief 
