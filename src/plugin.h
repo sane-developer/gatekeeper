@@ -2,7 +2,7 @@
 #define GATEKEEPER_PLUGIN_H
 
 #include <dirsrv/slapi-plugin.h>
-#include "bind_request.h"
+#include "bind_request_t.h"
 
 ///
 /// @brief

@@ -1,11 +1,11 @@
 #ifndef GATEKEEPER_BIND_REQUEST_H
 #define GATEKEEPER_BIND_REQUEST_H
 
-#include <time.h>
 #include <dirsrv/slapi-plugin.h>
+#include <time.h>
+#include "binding_policy_t.h"
+#include "logging_policy_t.h"
 #include "logger.h"
-#include "binding_policy.h"
-#include "logging_policy.h"
 
 ///
 /// @brief 
@@ -18,7 +18,7 @@ typedef struct
     char* sasl_mechanism;
     int uses_ssl;
     int auth_method;
-    time_t request_time;
+    time_t time;
 }
 bind_request_t;
 
@@ -28,7 +28,7 @@ bind_request_t;
 /// @param request
 /// @return
 ///
-int get_request_details(const Slapi_PBlock* block, bind_request_t* request);
+int get_request_details(Slapi_PBlock* block, bind_request_t* request);
 
 ///
 /// @brief
@@ -48,9 +48,9 @@ int has_met_rule_conditions(const bind_request_t* request, const binding_rule_t*
 
 ///
 /// @brief
-/// @param strategy
 /// @param request
+/// @param strategy
 ///
-void log_bind_request(logging_strategy_t strategy, const bind_request_t* request);
+void log_bind_request(const bind_request_t* request, logging_strategy_t strategy);
 
 #endif //GATEKEEPER_BIND_REQUEST_H
