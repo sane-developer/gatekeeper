@@ -1,6 +1,6 @@
 #include <dirsrv/slapi-plugin.h>
-#include "../allocators/allocator.h"
-#include "../loggers/logger.h"
+#include "allocator.h"
+#include "logger.h"
 
 void* allocate_memory(size_t size)
 {
