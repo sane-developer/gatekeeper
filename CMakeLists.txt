@@ -33,44 +33,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_DIR}/lib)
 
 #
-#  Setup std lib utilities.
+#  Setup plugin api.
 #
 
-file(GLOB std_utils
-    ./sdk/std_logger.c
-    ./sdk/std_allocator.c
-)
+file(GLOB_RECURSE api_src_files ./api/*.c)
 
-file(GLOB ds_utils
-    ./sdk/ds_logger.c
-    ./sdk/ds_allocator.c
-)
+file(GLOB_RECURSE api_header_files ./api/*.h)
 
-#
-#  Setup plugin SDK.
-#
+add_library(gatekeeper_sdk SHARED ${api_src_files})
 
-file(GLOB sdk_files 
-    ./sdk/array.c
-    ./sdk/string.c
-    ./sdk/bind_request.c
-    ./sdk/binding_policy.c
-    ./sdk/logging_policy.c
-    ./sdk/policy_provider.c
-)
-
-add_library(gatekeeper_sdk SHARED ${sdk_files})
-
-target_include_directories(gatekeeper_sdk PUBLIC ./include)
+target_include_directories(gatekeeper_sdk PUBLIC ${api_header_files})
 
 #
 #  Setup plugin.
 #
 
-file(GLOB plugin_files ./src/*.c)
+file(GLOB_RECURSE plugin_src_files ./plugin/*.c)
 
-add_library(gatekeeper_plugin SHARED ${plugin_files} ${ds_utils})
+add_library(gatekeeper_plugin SHARED ${plugin_src_files})
 
 target_link_libraries(gatekeeper_plugin gatekeeper_sdk)
-
-target_include_directories(gatekeeper_plugin PUBLIC ./include)
