@@ -1,16 +1,18 @@
 #ifndef GATEKEEPER_PARSER_H_
 #define GATEKEEPER_PARSER_H_
 
+#include <slapi-plugin.h>
+
 ///
-/// @brief Supplies the plugin with the custom ACI rules crafted by the user.
-///
-/// @param grant_aci_rules The pointer to a contaienr of ACI rules of grant type.
-/// @param deny_aci_rules The pointer to a container of ACI rules of deny type.  
-///
-/// @return 1, when the ACI rules have been successfully parsed; otherwise, 0. 
-///
+/// @brief Sets processed ACI rules to respective containers.
+/// @param block Pointer to the operation parameters block.
+/// @param grant_aci_rules Pointer to the contaienr of ACI rules of grant type.
+/// @param deny_aci_rules Pointer to the container of ACI rules of deny type.
+/// @return
+///     - 1 when ACI rules were set successfully.
+///     - 0 when error occured during parsing routine.
 /// TODO: Switch void* to appropriate aci rules type when implemented.
 ///
-int set_aci_rules(void* grant_aci_rules, void* deny_aci_rules);
+int set_aci_rules(Slapi_PBlock* block, void* grant_aci_rules, void* deny_aci_rules);
 
 #endif  // GATEKEEPER_PARSER_H_
