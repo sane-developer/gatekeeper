@@ -1,7 +1,6 @@
 #ifndef GATEKEEPER_BIND_REQUEST_T_H_
 #define GATEKEEPER_BIND_REQUEST_T_H_
 
-#include <dirsrv/slapi-plugin.h>
 #include "bind_request_client_t.h"
 #include "bind_request_datetime_t.h"
 
@@ -23,16 +22,18 @@ typedef struct
 bind_request_t;
 
 ///
-/// @brief Populates the bind request with data retrived from the server.
-/// @param block The pointer to the directory server parameter block. 
-/// @param request The pointer to the empty bind request.
-/// @return 1, when the bind request has been successfully populated; otherwise, 0.
+/// @brief Sets the bind request metadata based on the information stored in operation block.
+/// @param block Pointer to key-value pair container that contains information about operation.
+/// @param request Pointer to bind request metadata container.
+/// @return
+///     - 1, when the bind request metadata is successfully set.
+///     - 0, when the any of the metadata fields couldn't be filled.
 ///
-int populate_bind_request(Slapi_PBlock* block, bind_request_t* const request);
+int setup_bind_request(Slapi_PBlock* block, bind_request_t* const request);
 
 ///
-/// @brief Disposes the resources used to populate the bind request.
-/// @param request The pointer to the populated bind request.
+/// @brief Disposes the metadata allocated for sake of processing the bind request.
+/// @param request Pointer to bind request metadata container.
 ///
 void dispose_bind_request(bind_request_t* request);
 
