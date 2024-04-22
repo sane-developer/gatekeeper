@@ -12,27 +12,27 @@ typedef enum
     /// @brief Value indicating that SSL method has been used by the LDAP client.
     ///
     SSL,
-    
+
     ///
     /// @brief value indicating that SIMPLE method has been used by the ldap client.
     ///
     SIMPLE,
-    
+
     ///
     /// @brief Value indicating that anonymous method has been used by the LDAP client.
     ///
     ANONYMOUS,
-    
+
     ///
     /// @brief Value indicating that SASL GSSAPI method has been used by the LDAP client.
     ///
     SASL_GSSAPI,
-    
+
     ///
     /// @brief Value indicating that SASL EXTERNAL method has been used by the LDAP client.
     ///
     SASL_EXTERNAL,
-    
+
     ///
     /// @brief Value indicating that SASL DIGEST-MD5 method has been used by the LDAP client.
     ///
@@ -49,15 +49,15 @@ typedef struct
     /// @brief Numerical representation of IPv4 address that was used by the LDAP client.
     ///
     uint32_t ip;
-    
+
     ///
     /// @brief Numerical representation of DNS IPv4 address that was used by the LDAP client.
     ///
     uint32_t dns; 
-    
+
     ///
     /// @brief Numerical representation of authentication method that was used by the LDAP client.
-    ///   
+    ///
     authentication_t auth;
 
     ///

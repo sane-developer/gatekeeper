@@ -3,8 +3,24 @@
 
 #include "bind_request_client.h"
 #include "bind_request_connection.h"
-#include "bind_request_status.h"
 #include "slapi-plugin.h"
+
+///
+/// @brief Represents the status of processed bind request.
+///
+typedef enum
+{
+    ///
+    /// @brief Value indicating that bind request has been granted.
+    ///
+    REQUEST_GRANTED = 0,
+
+    ///
+    /// @brief Value indicating that bind request has been denied.
+    ///
+    REQUEST_DENIED = 1
+}
+bind_request_evaluation_t;
 
 ///
 /// @brief Represents the bind request issued by the LDAP client.
@@ -22,9 +38,9 @@ typedef struct
     bind_request_connection_t* connection;
 
     ///
-    /// @brief Pointer to a container that holds information about bind request evaluation status.
+    /// @brief Pointer to a string that holds the reason behind the evaluation.
     ///
-    bind_request_status_t* status;
+    char* note;
 }
 bind_request_t;
 
@@ -49,8 +65,9 @@ bind_request_evaluation_t setup_bind_request(const Slapi_PBlock* const block, bi
 /// @return REQUEST_GRANTED.
 ///
 /// @remarks This method contains side-effects:
-///     - Sends bind operation denied ldap code,
-///     - Writes a log about denied request.
+///     - Writes a log about granted bind request.
+///     - Disposes bind_request_t variable resources.
+///     - Sends bind operation denied ldap code to the LDAP client.
 ///
 bind_request_evaluation_t grant_bind_request(const Slapi_PBlock* const block, bind_request_t* request);
 
@@ -63,8 +80,9 @@ bind_request_evaluation_t grant_bind_request(const Slapi_PBlock* const block, bi
 /// @return REQUEST_DENIED.
 ///
 /// @remarks This method contains side-effects:
-///     - Sends bind operation denied ldap code,
-///     - Writes a log about denied request.
+///     - Writes a log about denied bind request.
+///     - Disposes bind_request_t variable resources.
+///     - Sends bind operation denied ldap code to the LDAP client.
 ///
 bind_request_evaluation_t deny_bind_request(const Slapi_PBlock* const block, bind_request_t* request);
 
