@@ -5,35 +5,35 @@
 #include "bind_request_datetime_t.h"
 
 ///
-/// @brief Represents the bind request issued by the client.
+/// @brief Represents the bind request issued by the LDAP client.
 ///
 typedef struct
 {
     ///
-    /// @brief The pointer to the client metadata retrieved from the directory server.
+    /// @brief Pointer to the LDAP client metadata retrieved from the directory server.
     ///
     bind_request_client_t* client;
 
     ///
-    /// @brief The pointer to the datetime metadata retrieved from the system.
+    /// @brief Pointer to the date & time metadata retrieved from the system.
     ///
     bind_request_datetime_t* datetime;
 }
 bind_request_t;
 
 ///
-/// @brief Sets the bind request metadata based on the information stored in operation block.
-/// @param block Pointer to key-value pair container that contains information about operation.
-/// @param request Pointer to bind request metadata container.
+/// @brief Attempt to initialize bind request metadata.
+/// @param block Pointer to a key-value pair storage for bind operation parameters.
+/// @param request Pointer to a zeroed bind_request_t variable.
 /// @return
-///     - 1, when the bind request metadata is successfully set.
-///     - 0, when the any of the metadata fields couldn't be filled.
+///     - 1, when all of the fields were successfully initialized.
+///     - 0, when any of the fields could not be initialized.
 ///
-int setup_bind_request(Slapi_PBlock* block, bind_request_t* const request);
+int initialize_bind_request(Slapi_PBlock* block, bind_request_t* const request);
 
 ///
-/// @brief Disposes the metadata allocated for sake of processing the bind request.
-/// @param request Pointer to bind request metadata container.
+/// @brief Disposes metadata inside bind_request_t variable.
+/// @param client Pointer to a populated bind_request_t variable.
 ///
 void dispose_bind_request(bind_request_t* request);
 

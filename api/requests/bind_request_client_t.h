@@ -46,43 +46,19 @@ typedef struct
 bind_request_client_t;
 
 ///
-/// @brief Sets the DN (Distinguished Name) for the client based on the operation parameters block.
-/// @param block Pointer to the operation parameters block.
-/// @param dn Pointer to a string representing the DN for the client.
+/// @brief Attempts to initialize LDAP client metadata.
+/// @param block Pointer to a key-value pair storage for bind operation parameters.
+/// @param client Pointer to a zeroed bind_request_client_t variable.
 /// @return
-///     - 1 when the DN is successfully set for the client.
-///     - 0 when an error occurs or the operation fails.
+///     - 1, when all of the fields were successfully initialized.
+///     - 0, when any of the fields could not be initialized.
 ///
-int set_client_dn(Slapi_PBlock* block, char* dn);
+int initialize_bind_request_client(const Slapi_PBlock* const block, bind_request_client_t* const client);
 
 ///
-/// @brief Sets the IPv4 address for the client based on the operation parameters block.
-/// @param block Pointer to the operation parameters block.
-/// @param ip Pointer to a variable representing the IPv4 address for the client.
-/// @return
-///     - 1 when the IPv4 address is successfully set for the client.
-///     - 0 when an error occurs or the operation fails.
+/// @brief Disposes metadata inside bind_request_client_t variable.
+/// @param client Pointer to a populated bind_request_client_t variable.
 ///
-int set_client_ip(Slapi_PBlock* block, uint32_t* ip);
-
-///
-/// @brief Sets the IPv4 DNS address for the client based on the operation parameters block.
-/// @param block Pointer to the operation parameters block.
-/// @param dns Pointer to a variable representing the IPv4 DNS address for the client.
-/// @return
-///     - 1 when the DNS address is successfully set for the client.
-///     - 0 when an error occurs or the operation fails.
-///
-int set_client_dns(Slapi_PBlock* block, uint32_t* dns);
-
-///
-/// @brief Sets the authentication method for the client based on the operation parameters block.
-/// @param block Pointer to the operation parameters block.
-/// @param auth Pointer to a variable representing the authentication method for the client.
-/// @return
-///     - 1 when the authentication method is successfully set for the client.
-///     - 0 when an error occurs or the operation fails.
-///
-int set_client_auth(Slapi_PBlock* block, authentication_method_t* auth);
+void dispose_bind_request_client(bind_request_client_t* client);
 
 #endif  // GATEKEEPER_BIND_REQUEST_CLIENT_T_H_

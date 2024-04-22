@@ -1,16 +1,33 @@
 #include "bind_request_datetime_t.h"
+#include <time.h>
 
-int set_full_date(const struct tm* local_time, char* full_date)
+static void set_full_date(const struct tm* const local_time, bind_request_datetime_t* const datetime)
 {
-    return 1;
+    (void) local_time;
+    (void) datetime;
 }
 
-int set_day_of_week(const struct tm* local_time, uint32_t* day_of_week)
+static void set_day_of_week(const struct tm* const local_time, bind_request_datetime_t* const datetime)
 {
-    return 1;
+    (void) local_time;
+    (void) datetime;
 }
 
-int set_time_of_day(const struct tm* local_time, uint32_t* time_of_day)
+static void set_time_of_day(const struct tm* const local_time, bind_request_datetime_t* const datetime)
 {
-    return 1;
+    (void) local_time;
+    (void) datetime;
+}
+
+void initialize_bind_request_datetime(bind_request_datetime_t* const datetime)
+{
+    time_t timer = time(NULL);
+
+    struct tm* local_time = localtime(&timer);
+
+    set_full_date(local_time, datetime);
+
+    set_day_of_week(local_time, datetime);
+
+    set_time_of_day(local_time, datetime);
 }
