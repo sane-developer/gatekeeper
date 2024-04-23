@@ -102,7 +102,7 @@ bind_request_state_t grant_bind_request(Slapi_PBlock* block, bind_request_t* req
     return REQUEST_GRANTED;
 }
 
-bind_request_state_t deny_bind_request(Slapi_PBlock* block, bind_request_t* request)
+bind_request_state_t deny_bind_request(Slapi_PBlock* block, bind_request_t* request, bind_request_state_t state)
 {
     return REQUEST_DENIED;
 }
