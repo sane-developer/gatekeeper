@@ -1,7 +1,13 @@
+#include "aci_rule.h"
 #include "bind_request.h"
 
 #define REGISTRATION_SUCCESS 0
+
 #define REGISTRATION_FAILURE 1
+
+static aci_rules_t* grant_aci_rules;
+
+static aci_rules_t* deny_aci_rules;
 
 static Slapi_ComponentId* plugin_id;
 
@@ -13,35 +19,29 @@ static Slapi_PluginDesc plugin_desc = (Slapi_PluginDesc)
     .spd_description = "Evaluates the bind request against custom-made ACI rules."
 };
 
-// TODO: Extract to appropriate data strucutre.
-int satisfies_grant_aci_rules(bind_request_t* request);
-
-// TODO: Extract to appropriate data strucutre.
-int satisfies_deny_aci_rules(bind_request_t* request);
-
 int on_bind_request(Slapi_PBlock* block)
 {
     bind_request_t request = {0};
 
-    bind_request_state_t status_after_fetching = fetch_bind_request_parameters(block, &request);
+    bind_request_state_t state_after_fetching = fetch_bind_request_parameters(block, &request);
 
-    if (status_after_fetching != PARAMETERS_FETCH_SUCCESS)
+    if (state_after_fetching != PARAMETERS_FETCH_SUCCESS)
     {
-        return deny_bind_request(block, &request, status_after_fetching);
+        return deny_bind_request(block, &request, state_after_fetching);
     }
 
-    bind_request_state_t status_after_deny_aci_rules_evaluation = satisfies_deny_aci_rules(&request);
+    bind_request_state_t state_after_deny_rules_evaluation = satisfies_deny_aci_rules(deny_aci_rules, &request);
 
-    if (status_after_deny_aci_rules_evaluation != SATISFIED_DENY_ACI_RULES)
+    if (state_after_deny_rules_evaluation != SATISFIED_DENY_ACI_RULES)
     {
-        return deny_bind_request(block, &request, status_after_deny_aci_rules_evaluation);
+        return deny_bind_request(block, &request, state_after_deny_rules_evaluation);
     }
 
-    bind_request_state_t status_after_grant_aci_rules_evaluation = satisfies_grant_aci_rules(&request);
+    bind_request_state_t state_after_grant_rules_evaluation = satisfies_grant_aci_rules(grant_aci_rules, &request);
 
-    if (status_after_grant_aci_rules_evaluation != SATISFIED_GRANT_ACI_RULES)
+    if (state_after_grant_rules_evaluation != SATISFIED_GRANT_ACI_RULES)
     {
-        return deny_bind_request(block, &request, status_after_grant_aci_rules_evaluation);
+        return deny_bind_request(block, &request, state_after_grant_rules_evaluation);
     }
 
     return grant_bind_request(block, &request);
