@@ -78,11 +78,6 @@ bind_request_state_t;
 typedef struct
 {
     ///
-    /// @brief Numerical value indicating the current state of the bind request.
-    ///
-    bind_request_state_t state;
-
-    ///
     /// @brief Pointer to a container that holds information about the LDAP client.
     ///
     bind_request_client_t* client;
@@ -131,6 +126,7 @@ bind_request_state_t grant_bind_request(Slapi_PBlock* block, bind_request_t* req
 ///
 /// @param block Pointer to Slapi_PBlock variable that stores the bind operation parameters.
 /// @param request Pointer to bind_request_t variable that stores the bind request parameters.
+/// @param state Numerical value indicating the main cause of denial of the bind request.
 ///
 /// @return REQUEST_DENIED.
 ///
@@ -139,6 +135,6 @@ bind_request_state_t grant_bind_request(Slapi_PBlock* block, bind_request_t* req
 ///     - Disposes bind_request_t variable resources.
 ///     - Sends bind operation denied ldap code to the LDAP client.
 ///
-bind_request_state_t deny_bind_request(Slapi_PBlock* block, bind_request_t* request);
+bind_request_state_t deny_bind_request(Slapi_PBlock* block, bind_request_t* request, bind_request_state_t state);
 
 #endif  // BIND_REQUEST_H_
