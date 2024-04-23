@@ -1,8 +1,7 @@
 #ifndef BIND_REQUEST_CONNECTION_H_
 #define BIND_REQUEST_CONNECTION_H_
 
-#include <stdint.h>
-#include <prio.h>
+#include <nspr4/prio.h>
 #include <time.h>
 
 ///

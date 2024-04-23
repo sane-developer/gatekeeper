@@ -27,21 +27,21 @@ int on_bind_request(Slapi_PBlock* block)
 
     if (status_after_fetching != PARAMETERS_FETCH_SUCCESS)
     {
-        return deny_bind_request(block, &request);
+        return deny_bind_request(block, &request, status_after_fetching);
     }
 
     bind_request_state_t status_after_deny_aci_rules_evaluation = satisfies_deny_aci_rules(&request);
 
     if (status_after_deny_aci_rules_evaluation != SATISFIED_DENY_ACI_RULES)
     {
-        return deny_bind_request(block, &request);
+        return deny_bind_request(block, &request, status_after_deny_aci_rules_evaluation);
     }
 
     bind_request_state_t status_after_grant_aci_rules_evaluation = satisfies_grant_aci_rules(&request);
 
     if (status_after_grant_aci_rules_evaluation != SATISFIED_GRANT_ACI_RULES)
     {
-        return deny_bind_request(block, &request);
+        return deny_bind_request(block, &request, status_after_grant_aci_rules_evaluation);
     }
 
     return grant_bind_request(block, &request);
