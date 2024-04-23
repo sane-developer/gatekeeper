@@ -43,14 +43,15 @@ add_library(gatekeeper_sdk SHARED
 )
 
 target_include_directories(gatekeeper_sdk PUBLIC
-    /usr/include/dirsrv
-    /usr/include/nspr
     ./api/
+    ./api/aci_rule/
+    ./api/bind_request/
+    /usr/include/dirsrv/
+    /usr/include/nspr4/
 )
 
 target_link_libraries(gatekeeper_sdk PUBLIC
     -L/usr/lib64/dirsrv
-#    -lslapd
     -lnspr4
 )
 

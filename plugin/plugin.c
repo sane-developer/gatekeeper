@@ -1,9 +1,7 @@
 #include "aci_rule.h"
+#include "aci_rules_parser.h"
 #include "bind_request.h"
-
-#define REGISTRATION_SUCCESS 0
-
-#define REGISTRATION_FAILURE 1
+#include "logger.h"
 
 static aci_rules_t* grant_aci_rules;
 
@@ -19,7 +17,25 @@ static Slapi_PluginDesc plugin_desc = (Slapi_PluginDesc)
     .spd_description = "Evaluates the bind request against custom-made ACI rules."
 };
 
-int on_bind_request(Slapi_PBlock* block)
+static int report_plugin_registration_success()
+{
+    const int PLUGIN_REGISTRATION_SUCCESS = 0;
+
+    write_info_log("%s", "Gatekeeper has been successfully registered.");
+
+    return PLUGIN_REGISTRATION_SUCCESS;
+}
+
+static int report_plugin_registration_failure(const char* reason)
+{
+    const int PLUGIN_REGISTRATION_FAILURE = -1;
+
+    write_critical_log("%s", reason);
+
+    return PLUGIN_REGISTRATION_FAILURE;
+}
+
+static int on_bind_request(Slapi_PBlock* block)
 {
     bind_request_t request = {0};
 
@@ -51,23 +67,28 @@ int register_gatekeeper(Slapi_PBlock* block)
 {
     if (slapi_pblock_get(block, SLAPI_PLUGIN_IDENTITY, plugin_id) != 0)
     {
-        return REGISTRATION_FAILURE;
+        return report_plugin_registration_failure("Failed at getting plugin identity.");
     }
 
     if (slapi_pblock_set(block, SLAPI_PLUGIN_VERSION, SLAPI_PLUGIN_VERSION_03) != 0)
     {
-        return REGISTRATION_FAILURE;
+        return report_plugin_registration_failure("Failed at setting LDAP protocol version.");
     }
 
     if (slapi_pblock_set(block, SLAPI_PLUGIN_DESCRIPTION, &plugin_desc) != 0)
     {
-        return REGISTRATION_FAILURE;
+        return report_plugin_registration_failure("Failed at setting plugin description.");
     }
 
     if (slapi_pblock_set(block, SLAPI_PLUGIN_PRE_BIND_FN, on_bind_request) != 0)
     {
-        return REGISTRATION_FAILURE;
+        return report_plugin_registration_failure("Failed at setting bind request handler.");
     }
 
-    return REGISTRATION_SUCCESS;
+    if (!set_aci_rules(block, grant_aci_rules, deny_aci_rules))
+    {
+        return report_plugin_registration_failure("Failed at setting custom ACI rules.");
+    }
+
+    return report_plugin_registration_success();
 }
