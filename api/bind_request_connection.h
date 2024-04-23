@@ -2,6 +2,8 @@
 #define BIND_REQUEST_CONNECTION_H_
 
 #include <stdint.h>
+#include <prio.h>
+#include <time.h>
 
 ///
 /// @brief Represents the numerical representation of supported authentication methods of LDAPv3 protocol.
@@ -46,14 +48,14 @@ authentication_t;
 typedef struct
 {
     ///
-    /// @brief Numerical representation of IPv4 address that was used by the LDAP client.
+    /// @brief Pointer to a PRNetAddr variable that holds IPv4 address that was used by the LDAP client.
     ///
-    uint32_t ip;
+    PRNetAddr* ip;
 
     ///
-    /// @brief Numerical representation of DNS IPv4 address that was used by the LDAP client.
+    /// @brief Pointer to a PRNetAddr variable that holds IPv4 address of DNS that was used by the LDAP client.
     ///
-    uint32_t dns; 
+    PRNetAddr* dns; 
 
     ///
     /// @brief Numerical representation of authentication method that was used by the LDAP client.
