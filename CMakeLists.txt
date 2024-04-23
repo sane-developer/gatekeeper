@@ -38,21 +38,19 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_DIR}/lib)
 
 file(GLOB_RECURSE api_src_files api/*.c)
 
-file(GLOB_RECURSE api_header_files api/*.h)
-
 add_library(gatekeeper_sdk SHARED
     ${api_src_files}
-    ${api_header_files}
 )
 
 target_include_directories(gatekeeper_sdk PUBLIC
     /usr/include/dirsrv
     /usr/include/nspr
+    ./api/
 )
 
-target_link_libraries(gatekeeper_sdk PUBLIC 
+target_link_libraries(gatekeeper_sdk PUBLIC
     -L/usr/lib64/dirsrv
-    -lslapd
+#    -lslapd
     -lnspr4
 )
 
