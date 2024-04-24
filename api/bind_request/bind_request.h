@@ -96,45 +96,18 @@ bind_request_t;
 
 ///
 /// @brief Fetches the bind request parameters from directory server and system resources.
-///
 /// @param block Pointer to Slapi_PBlock variable that stores the bind operation parameters.
 /// @param request Pointer to bind_request_t variable that stores the bind request parameters.
-///
 /// @return
 ///     - PARAMETERS_FETCH_SUCCESS, when all of the bind request parameters were successfully fetched.
 ///     - {RESOURCE_NAME}_FETCH_FAILURE, when the {RESOURCE_NAME} could not be fetched.
 ///
-bind_request_state_t fetch_bind_request_parameters(Slapi_PBlock* block, bind_request_t* const request);
+bind_request_state_t fetch_bind_request_parameters(Slapi_PBlock* block, bind_request_t* request);
 
 ///
-/// @brief Instructs the directory server to grant the bind request issued by the LDAP client.
+/// @brief Disposes the parameters allocated for the bind request.
+/// @param request 
 ///
-/// @param block Pointer to Slapi_PBlock variable that stores the bind operation parameters.
-/// @param request Pointer to bind_request_t variable that stores the bind request parameters.
-///
-/// @return REQUEST_GRANTED.
-///
-/// @remarks This method contains side-effects:
-///     - Writes a log about granted bind request.
-///     - Disposes bind_request_t variable resources.
-///     - Sends bind operation denied ldap code to the LDAP client.
-///
-bind_request_state_t grant_bind_request(Slapi_PBlock* block, bind_request_t* request);
-
-///
-/// @brief Instructs the directory server to deny the bind request issued by the LDAP client.
-///
-/// @param block Pointer to Slapi_PBlock variable that stores the bind operation parameters.
-/// @param request Pointer to bind_request_t variable that stores the bind request parameters.
-/// @param state Numerical value indicating the main cause of denial of the bind request.
-///
-/// @return REQUEST_DENIED.
-///
-/// @remarks This method contains side-effects:
-///     - Writes a log about denied bind request.
-///     - Disposes bind_request_t variable resources.
-///     - Sends bind operation denied ldap code to the LDAP client.
-///
-bind_request_state_t deny_bind_request(Slapi_PBlock* block, bind_request_t* request, bind_request_state_t state);
+void dispose_bind_request_parameters(bind_request_t* request);
 
 #endif  // BIND_REQUEST_H_
