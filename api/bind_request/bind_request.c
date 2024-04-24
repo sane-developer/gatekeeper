@@ -96,13 +96,3 @@ bind_request_state_t fetch_bind_request_parameters(Slapi_PBlock* block, bind_req
 
     return PARAMETERS_FETCH_SUCCESS;
 }
-
-bind_request_state_t grant_bind_request(Slapi_PBlock* block, bind_request_t* request)
-{
-    return REQUEST_GRANTED;
-}
-
-bind_request_state_t deny_bind_request(Slapi_PBlock* block, bind_request_t* request, bind_request_state_t state)
-{
-    return REQUEST_DENIED;
-}
