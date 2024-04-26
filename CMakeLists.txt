@@ -46,6 +46,7 @@ target_include_directories(gatekeeper_sdk PUBLIC
     ./api/
     ./api/aci_rule/
     ./api/bind_request/
+    ./api/third_party/
     /usr/include/dirsrv/
     /usr/include/nspr4/
 )

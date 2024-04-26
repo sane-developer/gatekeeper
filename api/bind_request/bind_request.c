@@ -20,63 +20,25 @@ static int has_fetched_client_attributes(Slapi_PBlock* block, bind_request_clien
     return 0; // TODO: Implement LDAP client attributes fetching.
 }
 
-static int has_fetched_client_ip(Slapi_PBlock* block, bind_request_connection_t* connection)
-{
-    return slapi_pblock_get(block, SLAPI_CONN_CLIENTNETADDR, connection->ip) != 0;
-}
-
-static int has_fetched_client_dns(Slapi_PBlock* block, bind_request_connection_t* connection)
-{
-    return slapi_pblock_get(block, SLAPI_CONN_SERVERNETADDR, connection->dns) != 0;
-}
-
-static int has_fetched_client_auth(Slapi_PBlock* block, bind_request_connection_t* connection)
-{
-    return 1;
-}
-
 bind_request_state_t fetch_bind_request_parameters(Slapi_PBlock* block, bind_request_t* const request)
 {
     bind_request_client_t client = {0};
 
-    if (!has_fetched_client_dn(block, &client))
-    {
-        return CLIENT_DN_FETCH_FAILURE;
-    }
+    bind_request_state_t state_after_fetching_client_metadata = fetch_bind_request_client_parameters(block, &client);
 
-    if (!has_fetched_client_roles(block, &client))
+    if (state_after_fetching_client_metadata != FETCHED_PARAMETERS)
     {
-        return CLIENT_ROLES_FETCH_FAILURE;
-    }
-
-    if (!has_fetched_client_groups(block, &client))
-    {
-        return CLIENT_GROUPS_FETCH_FAILURE;
-    }
-
-    if (!has_fetched_client_attributes(block, &client))
-    {
-        return CLIENT_ATTRIBUTES_FETCH_FAILURE;
+        return state_after_fetching_client_metadata;
     }
 
     bind_request_connection_t connection = {0};
 
-    if (!has_fetched_client_ip(block, &connection))
-    {
-        return CLIENT_IP_FETCH_FAILURE;
-    }
+    bind_request_state_t state_after_fetching_connection_metadata = fetch_bind_request_connection_parameters(block, &connection);
 
-    if (!has_fetched_client_dns(block, &connection))
+    if (state_after_fetching_connection_metadata != FETCHED_PARAMETERS)
     {
-        return CLIENT_DNS_FETCH_FAILURE;
+        return state_after_fetching_connection_metadata;
     }
-
-    if (!has_fetched_client_auth(block, &connection))
-    {
-        return CLIENT_AUTH_FETCH_FAILURE;
-    }
-
-    time_t timer = time(NULL);
 
     *request->client = (bind_request_client_t)
     {
@@ -91,8 +53,31 @@ bind_request_state_t fetch_bind_request_parameters(Slapi_PBlock* block, bind_req
         .ip = connection.ip,
         .dns = connection.dns,
         .auth = connection.auth,
-        .time = localtime(&timer)
+        .time = connection.time 
     };
 
-    return PARAMETERS_FETCH_SUCCESS;
+    return FETCHED_PARAMETERS;
+}
+
+void dispose_bind_request_parameters(bind_request_t *request)
+{
+    if (!request)
+    {
+        return;
+    }
+
+    if (request->client)
+    {
+        dispose_bind_request_client_parameters(request->client);
+    }
+
+    if (request->connection)
+    {
+        dispose_bind_request_connection_parameters(request->connection);
+    }
+
+    if (request->note)
+    {
+        // TODO: Free.
+    }
 }

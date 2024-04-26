@@ -1,6 +1,9 @@
 #ifndef BIND_REQUEST_CLIENT_H_
 #define BIND_REQUEST_CLIENT_H_
 
+#include "bind_request_state.h"
+#include <dirsrv/slapi-plugin.h>
+
 ///
 /// @brief Represents the LDAP client attributes.
 ///
@@ -29,51 +32,22 @@ typedef struct
 bind_request_client_t;
 
 ///
-/// @brief Determines whether the specified DN matches the one of the client.
-///
-/// @param client Pointer to a bind_request_client_t variable that stores the information about LDAP client.
-/// @param dn Pointer to a string that contains a DN to match against.
-///
+/// @brief Fetches the bind request client parameters from directory server.
+/// @param block Pointer to Slapi_PBlock variable that stores the bind operation parameters.
+/// @param client Pointer to bind_request_client_t variable that stores the bind request client parameters.
 /// @return
-///     - 1, when the DNs are equal.
-///     - 0, otherwise.
+///     - FETCHED_PARAMETERS, when all of the bind request client parameters were successfully fetched.
+///     - CLIENT_DN_FETCH_FAILURE, when directory server did not return client DN.
+///     - CLIENT_ROLES_FETCH_FAILURE, when directory server did not return client roles.
+///     - CLIENT_GROUPS_FETCH_FAILURE, when directory server did not return client groups.
+///     - CLIENT_ATTRIBUTES_FETCH_FAILURE, when directory server did not return client attributes.
 ///
-int matches_client_dn(const bind_request_client_t* const client, const char* const dn);
+bind_request_state_t fetch_bind_request_client_parameters(Slapi_PBlock* block, bind_request_client_t* client);
 
 ///
-/// @brief Determines whether the LDAP client belongs to the specified role.
+/// @brief Disposes the parameters allocated for the bind request client parameters.
+/// @param request Pointer to bind_request_t variable that stores the bind request client parameters.
 ///
-/// @param client Pointer to a bind_request_client_t variable that stores the information about LDAP client.
-/// @param role_name Pointer to a string that contains the name of the role to check against.
-///
-/// @return
-///     - 1, when the LDAP client belongs to the specified role.
-///     - 0, otherwise.
-///
-int matches_client_roles(const bind_request_client_t* const client, const char* const role_name);
-
-///
-/// @brief Determines whether the LDAP client belongs to the specified group.
-///
-/// @param client Pointer to a bind_request_client_t variable that stores the information about LDAP client.
-/// @param group_name Pointer to a string that contains the name of the group to check against.
-///
-/// @return
-///     - 1, when the LDAP client belongs to the specified group.
-///     - 0, otherwise.
-///
-int matches_client_groups(const bind_request_client_t* const client, const char* const group_name);
-
-///
-/// @brief Determines whether the LDAP client has the specified attribute assigned.
-///
-/// @param client Pointer to a bind_request_client_t variable that stores the information about LDAP client.
-/// @param attribute Pointer to a string that contains the attribute to check against.
-///
-/// @return
-///     - 1, when the LDAP client has the specified attribute assigned.
-///     - 0, otherwise.
-///
-int matches_client_attributes(const bind_request_client_t* const client, const char* const attribute);
+void dispose_bind_request_client_parameters(bind_request_client_t* client);
 
 #endif  // BIND_REQUEST_CLIENT_H_
