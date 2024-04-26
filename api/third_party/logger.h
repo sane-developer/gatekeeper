@@ -14,7 +14,7 @@ log_severity_t;
 
 ///
 /// @brief Writes a log of info severity.
-/// @param format_with_args The format and arguements meant to shape a log.
+/// @param formath_args The format and arguements meant to shape a log.
 ///
 #define write_info_log(format, args) write_custom_log(INFO, (format), (args))
 

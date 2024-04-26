@@ -1,8 +1,18 @@
 #ifndef PLUGIN_H_
 #define PLUGIN_H_
 
-#include <dirsrv/slapi-plugin.h>
+#include "aci_rule.h"
 #include "bind_request.h"
+
+///
+/// @brief Collection of custom ACI rules of grant type.
+///
+static aci_rules_t* grant_aci_rules;
+
+///
+/// @brief Collection of custom ACI rules of deny type.
+///
+static aci_rules_t* deny_aci_rules;
 
 ///
 /// @brief Identity of the plugin.
@@ -53,27 +63,9 @@ typedef enum
     ///
     /// @brief Value indicating that custom ACI rules parser returned an error.
     ///
-    FAILED_TO_SET_CUSTOM_ACI_RULES = 5
+    FAILED_TO_SUPPLY_CUSTOM_ACI_RULES = 5
 }
 plugin_registration_state_t;
-
-///
-/// @brief Handles the successful plugin registration.
-/// @return REGISTRATION_SUCCESS.
-///
-plugin_registration_state_t on_registration_success();
-
-///
-/// @brief Handles the unsuccessful plugin registration.
-/// @param error Numerical representation of the error that caused the plugin registration failure.
-/// @return
-///     - FAILED_TO_GET_PLUGIN_IDENTITY, when the directory server could not retrieve the plugin identity.
-///     - FAILED_TO_SET_PLUGIN_DESCRIPTION, when the directory server could not set the plugin metadata.
-///     - FAILED_TO_SET_LDAP_PROTOCOL_VERSION, when the directory server could not set the LDAP protocol version.
-///     - FAILED_TO_SET_BIND_REQUEST_HANDLER, when the directory server could not set the bind request handler.
-///     - FAILED_TO_SET_CUSTOM_ACI_RULES, when the custom ACI rules parser returned an error.
-///
-plugin_registration_state_t on_registration_failure(plugin_registration_state_t error);
 
 ///
 /// @brief Handles the incoming bind request issued by the LDAP client.
@@ -100,5 +92,24 @@ bind_request_state_t on_granted_bind_request(Slapi_PBlock* block, bind_request_t
 /// @return REQUEST_DENIED.
 ///
 bind_request_state_t on_denied_bind_request(Slapi_PBlock* block, bind_request_t* request, bind_request_state_t error);
+
+///
+/// @brief Handles the successful plugin registration.
+/// @param success Numerical representation of the plugin registration success state.
+/// @return REGISTRATION_SUCCESS.
+///
+plugin_registration_state_t on_registration_success(plugin_registration_state_t success);
+
+///
+/// @brief Handles the unsuccessful plugin registration.
+/// @param error Numerical representation of the state that caused the plugin registration failure.
+/// @return
+///     - FAILED_TO_GET_PLUGIN_IDENTITY, when the directory server could not retrieve the plugin identity.
+///     - FAILED_TO_SET_PLUGIN_DESCRIPTION, when the directory server could not set the plugin metadata.
+///     - FAILED_TO_SET_LDAP_PROTOCOL_VERSION, when the directory server could not set the LDAP protocol version.
+///     - FAILED_TO_SET_BIND_REQUEST_HANDLER, when the directory server could not set the bind request handler.
+///     - FAILED_TO_SET_CUSTOM_ACI_RULES, when the custom ACI rules parser returned an error.
+///
+plugin_registration_state_t on_registration_failure(plugin_registration_state_t error);
 
 #endif // PLUGIN_H_

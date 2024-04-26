@@ -1,6 +1,8 @@
 #ifndef BIND_REQUEST_CONNECTION_H_
 #define BIND_REQUEST_CONNECTION_H_
 
+#include "bind_request_state.h"
+#include <dirsrv/slapi-plugin.h>
 #include <nspr4/prio.h>
 #include <time.h>
 
@@ -67,5 +69,24 @@ typedef struct
     struct tm* time;
 }
 bind_request_connection_t;
+
+///
+/// @brief Fetches the bind request connection parameters from directory server and system resources.
+/// @param block Pointer to Slapi_PBlock variable that stores the bind operation parameters.
+/// @param request Pointer to bind_request_connection_t variable that stores the bind request connection parameters.
+/// @return
+///     - FETCHED_PARAMETERS, when all of the bind request connection parameters were successfully fetched.
+///     - CONNECTION_IP_FETCH_FAILURE, when directory server did not return IPv4 address used to connect.
+///     - CONNECTION_DNS_FETCH_FAILURE, when directory server did not return DNS IPv4 address used to connect.
+///     - CONNECTION_AUTH_FETCH_FAILURE, when directory server did not return authentcation method used to connect.
+///     - CONNECTION_TIME_FETCH_FAILURE, when system clock did not return valid value.
+///
+bind_request_state_t fetch_bind_request_connection_parameters(Slapi_PBlock* block, bind_request_connection_t* connection);
+
+///
+/// @brief Disposes the parameters allocated for the bind request connection parameters.
+/// @param request Pointer to bind_request_t variable that stores the bind request connection parameters.
+///
+void dispose_bind_request_connection_parameters(bind_request_connection_t* connection);
 
 #endif  // BIND_REQUEST_CONNECTION_H_

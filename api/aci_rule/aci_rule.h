@@ -1,7 +1,7 @@
 #ifndef ACI_RULE_H_
 #define ACI_RULE_H_
 
-#include "aci_condition.h"
+#include "aci_rule_condition.h"
 #include "bind_request.h"
 
 ///
@@ -17,12 +17,12 @@ typedef struct
     ///
     /// @brief Pointer to a collection of ACI conditions that determine whether the ACI rule should be applied.
     ///
-    aci_conditions_t* apply;
+    aci_rule_conditions_t* apply;
 
     ///
     /// @brief Pointer to a collection of ACI conditions that determine whether the bind request should be granted.
     ///
-    aci_conditions_t* bind;
+    aci_rule_conditions_t* bind;
 }
 aci_rule_t;
 
@@ -49,33 +49,23 @@ typedef struct
 aci_rules_t;
 
 ///
-/// @brief Determines whether bind request satisfies applied grant ACI rules.
-///
-/// @param rules Pointer to the head of collection of pointers to aci_rules_t variables of grant type.
-/// @param request Pointer to the populated bind_request_t variable.
-///
+/// @brief
+/// @param rule
+/// @param request
 /// @return
-///     - SATISFIED_GRANT_ACI_RULES, when request met all of the bind conditions of applied ACI rules.
-///     - REQUEST_DENIED, otherwise.
+///     - 1, when .
+///     - 0, when .
 ///
-/// @remark
-///     - If REQUEST_DENIED was returned; the label of the violated ACI rule is copied into bind_request_t "note" field.
-///
-bind_request_state_t satisfies_grant_aci_rules(const aci_rules_t* rules, bind_request_t* request);
+int has_applied_aci_rule(const aci_rule_t* rule, const bind_request_t* request);
 
 ///
-/// @brief Determines whether bind request satisfies applied deny ACI rules.
-///
-/// @param rules Pointer to the head of collection of pointers to aci_rules_t variables of deny type.
-/// @param request Pointer to the populated bind_request_t variable.
-///
+/// @brief
+/// @param rule
+/// @param request
 /// @return
-///     - SATISFIED_DENY_ACI_RULES, when request did not meet any of bind conditions of applied ACI rules.
-///     - REQUEST_DENIED, otherwise.
+///     - 1, when .
+///     - 0, when .
 ///
-/// @remark
-///     - If REQUEST_DENIED was returned; the label of the violated ACI rule is copied into bind_request_t "note" field.
-///
-bind_request_state_t satisfies_deny_aci_rules(const aci_rules_t* rules, bind_request_t* request);
+int has_triggered_aci_rule(const aci_rule_t* rule, const bind_request_t* request);
 
 #endif  // ACI_RULE_H_
