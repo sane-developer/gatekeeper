@@ -36,17 +36,21 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_DIR}/lib)
 # Setup plugin api.
 #
 
-file(GLOB_RECURSE api_src_files api/*.c)
+file(GLOB_RECURSE api_src_files ./src/*.c)
 
 add_library(gatekeeper_sdk SHARED
     ${api_src_files}
 )
 
 target_include_directories(gatekeeper_sdk PUBLIC
-    ./api/
-    ./api/aci_rule/
-    ./api/bind_request/
-    ./api/third_party/
+    ./src/abstractions/
+    ./src/enumerations/
+    ./src/events/
+    ./src/models/aci_rules/
+    ./src/models/bind_requests/
+    ./src/models/ldap_clients/
+    ./src/models/ldap_connections/
+    ./src/modules/
     /usr/include/dirsrv/
     /usr/include/nspr4/
 )
@@ -60,7 +64,7 @@ target_link_libraries(gatekeeper_sdk PUBLIC
 # Setup plugin.
 #
 
-file(GLOB_RECURSE plugin_src_files plugin/*.c)
+file(GLOB_RECURSE plugin_src_files ./src/plugin.c)
 
 add_library(gatekeeper_plugin SHARED ${plugin_src_files})
 
