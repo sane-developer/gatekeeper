@@ -1,15 +1,15 @@
+#include "aci_rule_condition.h"
 #include <string.h>
 #include <regex.h>
-#include "aci_rule_conditions.h"
 
-static bool equals(const aci_rule_condition_operands_t* operands, const char* source)
+static bool equals(const aci_rule_operands_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
     return strcmp(source, target) == 0;
 }
 
-static bool matches(const aci_rule_condition_operands_t* operands, const char* source)
+static bool matches(const aci_rule_operands_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
@@ -18,7 +18,7 @@ static bool matches(const aci_rule_condition_operands_t* operands, const char* s
     return regcomp(&expression, target, 0) && regexec(&expression, source, 0, NULL, 0) == 0;
 }
 
-static bool starts_with(const aci_rule_condition_operands_t* operands, const char* source)
+static bool starts_with(const aci_rule_operands_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
@@ -33,7 +33,7 @@ static bool starts_with(const aci_rule_condition_operands_t* operands, const cha
     return true;
 }
 
-static bool ends_with(const aci_rule_condition_operands_t* operands, const char* source)
+static bool ends_with(const aci_rule_operands_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
@@ -59,7 +59,7 @@ static bool ends_with(const aci_rule_condition_operands_t* operands, const char*
     return true;
 }
 
-static bool in(const aci_rule_condition_operands_t* operands, const char* source)
+static bool in(const aci_rule_operands_t* operands, const char* source)
 {
     for (size_t i = 0; i < operands->count; ++i)
     {
@@ -74,21 +74,21 @@ static bool in(const aci_rule_condition_operands_t* operands, const char* source
     return false;
 }
 
-bool satisfies_dn_condition(const aci_rule_condition_t* condition, const char* dn)
+dn_operation get_dn_operation(aci_rule_operation_t operation)
 {
-    switch (condition->operation)
+    switch (operation)
     {
         case EQUALS:
-            return equals(condition->operands, dn);
+            return equals;
         case MATCHES:
-            return matches(condition->operands, dn);
+            return matches;
         case STARTS_WITH:
-            return starts_with(condition->operands, dn);
+            return starts_with;
         case ENDS_WITH:
-            return ends_with(condition->operands, dn);
+            return ends_with;
         case IN:
-            return in(condition->operands, dn);
+            return in;
         default:
-            return false;
+            return NULL;
     }
 }

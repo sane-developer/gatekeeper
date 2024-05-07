@@ -1,5 +1,4 @@
-#include "aci_rule_evaluator.h"
-#include "aci_rule_conditions.h"
+#include "bind_request_evaluator.h"
 
 static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, const bind_request_t* request)
 {
@@ -38,9 +37,7 @@ static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, c
             }
             case ROLES:
             {
-                const char** roles = (const char**) request->roles;
-
-                if (!satisfies_roles_condition(condition, roles))
+                if (!satisfies_roles_condition(condition, request->roles))
                 {
                     return false;
                 }
@@ -49,9 +46,7 @@ static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, c
             }
             case GROUPS:
             {
-                const char** groups = (const char**) request->groups;
-
-                if (!satisfies_groups_condition(condition, groups))
+                if (!satisfies_groups_condition(condition, request->groups))
                 {
                     return false;
                 }
@@ -60,9 +55,7 @@ static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, c
             }
             case ATTRIBUTES:
             {
-                const char** attributes = (const char**) request->attributes;
-
-                if (!satisfies_attributes_condition(condition, attributes))
+                if (!satisfies_attributes_condition(condition, request->attributes))
                 {
                     return false;
                 }
@@ -71,7 +64,7 @@ static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, c
             }
             case DAY_OF_WEEK:
             {
-                if (!satisfies_day_of_week_condition(condition, &request->datetime))
+                if (!satisfies_day_of_week_condition(condition, request->day_of_week))
                 {
                     return false;
                 }
@@ -80,7 +73,7 @@ static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, c
             }
             case TIME_OF_DAY:
             {
-                if (!satisfies_time_of_day_condition(condition, &request->datetime))
+                if (!satisfies_time_of_day_condition(condition, request->time_of_day))
                 {
                     return false;
                 }
@@ -93,23 +86,38 @@ static bool satisfies_rule_conditions(const aci_rule_conditions_t* conditions, c
     return true;
 }
 
-bind_request_status_t evaluate_against_grant_rules(const aci_rules_t* rules, bind_request_t* request)
+static bool has_excluded(const aci_rule_t* rule, const bind_request_t* request)
+{
+    return satisfies_rule_conditions(rule->exclude, request);
+}
+
+static bool has_applied(const aci_rule_t* rule, const bind_request_t* request)
+{
+    return satisfies_rule_conditions(rule->apply, request);
+}
+
+static bool has_satisfied(const aci_rule_t* rule, const bind_request_t* request)
+{
+    return satisfies_rule_conditions(rule->bind, request);
+}
+
+bind_request_status_t satisfies_grant_rules(const aci_rules_t* rules, bind_request_t* request)
 {
     for (size_t i = 0; i < rules->count; ++i)
     {
         aci_rule_t* rule = rules->items[i];
 
-        if (satisfies_rule_conditions(rule->exclude, request))
+        if (has_excluded(rule, request))
         {
             continue;
         }
 
-        if (!satisfies_rule_conditions(rule->apply, request))
+        if (!has_applied(rule, request))
         {
             continue;
         }
 
-        if (!satisfies_rule_conditions(rule->bind, request))
+        if (!has_satisfied(rule, request))
         {
             return REQUEST_DENIED;
         }
@@ -118,23 +126,23 @@ bind_request_status_t evaluate_against_grant_rules(const aci_rules_t* rules, bin
     return REQUEST_SATISFIED_GRANT_RULES;
 }
 
-bind_request_status_t evaluate_against_deny_rules(const aci_rules_t* rules, bind_request_t* request)
+bind_request_status_t satisfies_deny_rules(const aci_rules_t* rules, bind_request_t* request)
 {
     for (size_t i = 0; i < rules->count; ++i)
     {
         aci_rule_t* rule = rules->items[i];
 
-        if (satisfies_rule_conditions(rule->exclude, request))
+        if (has_excluded(rule, request))
         {
             continue;
         }
 
-        if (!satisfies_rule_conditions(rule->apply, request))
+        if (!has_applied(rule, request))
         {
             continue;
         }
 
-        if (satisfies_rule_conditions(rule->bind, request))
+        if (has_satisfied(rule, request))
         {
             return REQUEST_DENIED;
         }
