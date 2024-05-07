@@ -17,9 +17,9 @@ cd build
 #
 
 if [[ "$1" == "-d" ]] ; then
-  cmake -DCMAKE_BUILD_TYPE=Debug ..
+  cmake -DCMAKE_BUILD_TYPE=Debug ../src/
 else
-  cmake ..
+  cmake ../src/
 fi
 
 #
