@@ -41,36 +41,13 @@ typedef union
     ///
     /// @brief
     ///
-    int day_of_week;
+    uint32_t day_of_week;
 
     ///
     /// @brief
     ///
-    struct { int hours; int minutes; } time_of_day;
+    uint32_t time_of_day;
 }
 aci_rule_operand_t;
-
-
-///
-/// @brief
-///
-typedef struct
-{
-    ///
-    /// @brief
-    ///
-    aci_rule_operand_t* items;
-
-    ///
-    /// @brief
-    ///
-    size_t capacity;
-
-    ///
-    /// @brief
-    ///
-    size_t count;
-}
-aci_rule_operands_t;
 
 #endif  // ACI_RULE_OPERAND_H
