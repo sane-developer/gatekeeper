@@ -14,7 +14,12 @@ typedef enum
     ///
     /// @brief
     ///
-    OR
+    OR,
+
+    ///
+    /// @brief
+    ///
+    TERMINATOR
 }
 aci_rule_operator_t;
 
