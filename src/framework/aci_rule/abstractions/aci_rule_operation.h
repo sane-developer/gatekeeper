@@ -66,6 +66,6 @@ typedef enum
     ///
     ENDS_WITH = 1 << 11
 }
-aci_rule_operations_t, aci_rule_operation_t;
+aci_rule_operation_t;
 
 #endif  // ACI_RULE_OPERATION_H

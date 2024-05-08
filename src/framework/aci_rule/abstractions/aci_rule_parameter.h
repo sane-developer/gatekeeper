@@ -46,6 +46,6 @@ typedef enum
     ///
     TIME_OF_DAY
 }
-aci_rule_parameters_t, aci_rule_parameter_t;
+aci_rule_parameter_t;
 
 #endif  // ACI_RULE_PARAMETER_H
