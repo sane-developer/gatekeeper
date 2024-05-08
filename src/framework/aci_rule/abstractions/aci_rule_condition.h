@@ -1,5 +1,5 @@
-#ifndef ACI_RULE_EXPRESSION_H
-#define ACI_RULE_EXPRESSION_H
+#ifndef ACI_RULE_CONDITION_H
+#define ACI_RULE_CONDITION_H
 
 #include "aci_rule_operand.h"
 #include "aci_rule_operator.h"
@@ -14,7 +14,7 @@
 ///
 /// @brief
 ///
-typedef struct
+typedef struct aci_rule_expression_t
 {
     ///
     /// @brief
@@ -41,6 +41,6 @@ typedef struct
     ///
     struct aci_rule_expression_t* next;
 }
-aci_rule_expression_t;
+aci_rule_condition_t;
 
-#endif  // ACI_RULE_EXPRESSION_H
+#endif  // ACI_RULE_CONDITION_H

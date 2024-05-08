@@ -2,14 +2,14 @@
 #include <string.h>
 #include <regex.h>
 
-static bool equals(const aci_rule_operands_t* operands, const char* source)
+static bool equals(const aci_rule_operand_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
     return strcmp(source, target) == 0;
 }
 
-static bool matches(const aci_rule_operands_t* operands, const char* source)
+static bool matches(const aci_rule_operand_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
@@ -18,7 +18,7 @@ static bool matches(const aci_rule_operands_t* operands, const char* source)
     return regcomp(&expression, target, 0) && regexec(&expression, source, 0, NULL, 0) == 0;
 }
 
-static bool starts_with(const aci_rule_operands_t* operands, const char* source)
+static bool starts_with(const aci_rule_operand_t* operands, const char* source)
 {
     const char* target = operands->items[0].dn;
 
