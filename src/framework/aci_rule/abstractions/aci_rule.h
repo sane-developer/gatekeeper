@@ -6,11 +6,6 @@
 ///
 /// @brief
 ///
-#define MAXIMUM_CONDITIONS_COUNT 10
-
-///
-/// @brief
-///
 typedef struct
 {
     ///

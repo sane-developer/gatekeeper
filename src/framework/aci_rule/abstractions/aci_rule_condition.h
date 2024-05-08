@@ -9,7 +9,7 @@
 ///
 /// @brief
 ///
-#define MAXIMUM_OPERANDS_COUNT 5
+#define MAXIMUM_CONDITIONS_COUNT 10
 
 ///
 /// @brief

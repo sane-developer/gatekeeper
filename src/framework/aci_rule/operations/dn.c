@@ -1,30 +1,30 @@
-#include "aci_rule_condition.h"
+#include "aci_rule_operation_provider.h"
 #include <string.h>
 #include <regex.h>
 
-static bool equals(const aci_rule_operand_t* operands, const char* source)
+static bool equals(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
-    const char* target = operands->items[0].dn;
+    const char* target = operands[0].dn;
 
-    return strcmp(source, target) == 0;
+    return strcmp(request->dn, target) == 0;
 }
 
-static bool matches(const aci_rule_operand_t* operands, const char* source)
+static bool matches(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
-    const char* target = operands->items[0].dn;
+    const char* target = operands[0].dn;
 
     regex_t expression = {0};
 
-    return regcomp(&expression, target, 0) && regexec(&expression, source, 0, NULL, 0) == 0;
+    return regcomp(&expression, target, 0) && regexec(&expression, request->dn, 0, NULL, 0) == 0;
 }
 
-static bool starts_with(const aci_rule_operand_t* operands, const char* source)
+static bool starts_with(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
-    const char* target = operands->items[0].dn;
+    const char* target = operands[0].dn;
 
     for (size_t i = 0; i < strlen(target); ++i)
     {
-        if (source[i] != target[i])
+        if (request->dn[i] != target[i])
         {
             return false;
         }
@@ -33,11 +33,11 @@ static bool starts_with(const aci_rule_operand_t* operands, const char* source)
     return true;
 }
 
-static bool ends_with(const aci_rule_operands_t* operands, const char* source)
+static bool ends_with(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
-    const char* target = operands->items[0].dn;
+    const char* target = operands[0].dn;
 
-    const int source_last_letter_index = strlen(source) - 1;
+    const int source_last_letter_index = strlen(request->dn) - 1;
 
     const int target_last_letter_index = strlen(target) - 1;
 
@@ -50,7 +50,7 @@ static bool ends_with(const aci_rule_operands_t* operands, const char* source)
 
     for (size_t i = source_last_letter_index; i > target_last_letter_index; --i)
     {
-        if (source[i] != target[i - offset])
+        if (request->dn[i] != target[i - offset])
         {
             return false;
         }
@@ -59,13 +59,13 @@ static bool ends_with(const aci_rule_operands_t* operands, const char* source)
     return true;
 }
 
-static bool in(const aci_rule_operands_t* operands, const char* source)
+static bool in(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
-    for (size_t i = 0; i < operands->count; ++i)
+    for (size_t i = 0; i < MAXIMUM_OPERANDS_COUNT; ++i)
     {
-        const char* target = operands->items[i].dn;
+        const char* target = operands[i].dn;
 
-        if (strcmp(source, target) == 0)
+        if (strcmp(request->dn, target) == 0)
         {
             return true;
         }
@@ -74,7 +74,7 @@ static bool in(const aci_rule_operands_t* operands, const char* source)
     return false;
 }
 
-dn_operation get_dn_operation(aci_rule_operation_t operation)
+aci_rule_operation get_dn_operation(aci_rule_operation_t operation)
 {
     switch (operation)
     {

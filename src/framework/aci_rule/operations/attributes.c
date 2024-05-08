@@ -1,16 +1,16 @@
-#include "aci_rule_condition.h"
+#include "aci_rule_operation_provider.h"
 
-static bool all(const aci_rule_operands_t* operands, const char** attributes)
+static bool all(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-static bool any(const aci_rule_operands_t* operands, const char** attributes)
+static bool any(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-attributes_operation get_attributes_operation(aci_rule_operation_t operation)
+aci_rule_operation get_attributes_operation(aci_rule_operation_t operation)
 {
     switch (operation)
     {

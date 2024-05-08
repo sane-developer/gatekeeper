@@ -1,6 +1,6 @@
 #include "aci_rule_operation_provider.h"
 
-operation get_aci_rule_operation(aci_rule_parameter_t parameter, aci_rule_operation_t operation)
+aci_rule_operation get_operation(aci_rule_parameter_t parameter, aci_rule_operation_t operation)
 {
     switch (parameter)
     {
@@ -19,6 +19,6 @@ operation get_aci_rule_operation(aci_rule_parameter_t parameter, aci_rule_operat
         case DAY_OF_WEEK:
             return get_day_of_week_operation(operation);
         case TIME_OF_DAY:
-            return get_time_of_day_operaton(operation);
+            return get_time_of_day_operation(operation);
     }
 }
