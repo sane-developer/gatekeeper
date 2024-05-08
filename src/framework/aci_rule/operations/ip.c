@@ -1,21 +1,21 @@
-#include "aci_rule_condition.h"
+#include "aci_rule_operation_provider.h"
 
-static bool equals(const aci_rule_operands_t* operands, const PRNetAddr* ip)
+static bool equals(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-static bool range(const aci_rule_operands_t* operands, const PRNetAddr* ip)
+static bool range(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-static bool in(const aci_rule_operands_t* operands, const PRNetAddr* ip)
+static bool in(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-ip_operation get_ip_operation(aci_rule_operation_t operation)
+aci_rule_operation get_ip_operation(aci_rule_operation_t operation)
 {
     switch (operation)
     {

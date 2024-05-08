@@ -6,6 +6,11 @@
 ///
 /// @brief
 ///
+#define MAXIMUM_OPERANDS_COUNT 5
+
+///
+/// @brief
+///
 typedef union
 {
     ///

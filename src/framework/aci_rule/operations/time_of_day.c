@@ -1,21 +1,21 @@
-#include "aci_rule_condition.h"
+#include "aci_rule_operation_provider.h"
 
-static bool after(const aci_rule_operands_t* operands, const PRExplodedTime* datetime)
+static bool after(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-static bool before(const aci_rule_operands_t* operands, const PRExplodedTime* datetime)
+static bool before(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-static bool between(const aci_rule_operands_t* operands, const PRExplodedTime* datetime)
+static bool between(const aci_rule_operand_t* operands, const bind_request_t* request)
 {
     return 0;
 }
 
-time_of_day_operation get_time_of_day_operation(aci_rule_operation_t operation)
+aci_rule_operation get_time_of_day_operation(aci_rule_operation_t operation)
 {
     switch (operation)
     {
