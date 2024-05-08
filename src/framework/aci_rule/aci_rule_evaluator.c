@@ -1,57 +1,80 @@
 #include "aci_rule_evaluator.h"
+#include "aci_rule_operation_provider.h"
+
+typedef struct
+{
+    bool or_state;
+
+    bool and_state;
+
+    bool skip_till_next_or;
+
+    aci_rule_operator_t operator;
+}
+aci_rule_evaluator_state_t;
+
+static bool handle_or_operator(aci_rule_evaluator_state_t* state, aci_rule_expression_t* head, bind_request_t* request)
+{
+    if (state->and_state)
+    {
+        return true; // The output will always be 1 at this point.
+    }
+
+    state->and_state |= operation(head->operands, request);
+
+    state->or_state &= state.and_state;
+
+    state->and_state = true; // The substate must be reset in case the next operation is AND;
+
+    return false;
+}
+
+static bool handle_and_operator(aci_rule_evaluator_state_t* state, aci_rule_expression_t* head, bind_request_t* request)
+{
+    if (!state->and_state)
+    {
+        state->skip_till_next_or = true;
+
+        return false;
+    }
+
+    state->and_state &= operation(head->operands, request);
+}
 
 static bool has_satisfied_condition(const aci_rule_condition_t* condition, const bind_request_t* request)
 {
-    bool state = true;
+    const struct aci_rule_expression_t* head;
 
-    bool substate = true;
-
-    aci_rule_operator_t operator = AND;
-
-    const struct aci_rule_expression_t* head = condition;
+    aci_rule_evaluator_state_t state =
+    {
+        .or_state = 1,
+        .and_state = 1,
+        .skip_till_next_or = 0,
+        .operator = AND
+    };
 
     while (head)
     {
-        expression_operation operation = get_expression_operation(head->parameter, head->operation);
+        aci_rule_operation operation = get_operation(head->parameter, state.head->operation);
 
-        switch (operator)
+        switch (state.operator)
         {
             case AND:
-            {
-                if (!substate)
-                {
-                    break;  // The output will always be 0 at this point. Skip till next OR.
-                }
-
-                substate &= operation(head->operands, request);
-
+                handle_and_operator();
                 break;
-            }
             case OR:
-            {
-                if (substate)
-                {
-                    return true; // The output will always be 1 at this point.
-                }
-
-                substate |= operation(head->operands, request);
-
-                state &= substate;
-
-                substate = true; // The substate must be reset in case the next operation is AND;
-
+                handle_or_operator();
                 break;
-            }
             case TERMINATOR:
-            {
-                return state & substate; // The end of the evaluation.
-            }
+                return state.or_state & state.and_state; // The end of the evaluation.
         }
 
-        operator = head->operator;
+        state.operator = head->operator;
 
         head = head->next;
     }
+
+    return state.or_state;
 }
 
 static bool has_satisfied_any_conditions(const aci_rule_condition_t** conditions, const bind_request_t* request)
