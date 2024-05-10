@@ -1,3 +1,4 @@
+#include "bind_request_handler.h"
 #include "plugin_registrar.h"
 #include "plugin_registrar_actions.h"
 #include "plugin_registrar_status.h"
@@ -29,6 +30,14 @@ static Slapi_PluginDesc plugin_description =
 };
 
 ///
+/// @brief
+///
+static bind_request_status_t on_recieved_bind_request(Slapi_PBlock* block)
+{
+    return handle_bind_request(block, grant_rules, deny_rules);
+}
+
+///
 /// @brief Initializes the plugin within 389 directory server environment.
 /// @remark In case the registration fails; directory server will not launch.
 /// @remark This is the starting point of the entire application.
@@ -50,7 +59,7 @@ plugin_registrar_status_t initialize_gatekeeper(Slapi_PBlock* block)
         return cancel_registration(block, FAILED_TO_SET_PLUGIN_LDAP_PROTOCOL_VERSION);
     }
 
-    if (!set_plugin_bind_request_handler(block))
+    if (!set_plugin_bind_request_handler(block, on_recieved_bind_request))
     {
         return cancel_registration(block, FAILED_TO_SET_PLUGIN_BIND_REQUEST_HANDLER);
     }

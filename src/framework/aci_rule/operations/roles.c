@@ -10,7 +10,7 @@ static bool any(const aci_rule_operand_t* operands, const bind_request_t* reques
     return 0;
 }
 
-aci_rule_operation get_attributes_operation(aci_rule_operation_t operation)
+aci_rule_operation_t get_roles_operation(aci_rule_operation_type_t operation)
 {
     switch (operation)
     {

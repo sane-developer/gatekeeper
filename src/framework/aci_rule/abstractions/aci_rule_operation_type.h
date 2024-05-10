@@ -1,5 +1,5 @@
-#ifndef ACI_RULE_OPERATION_H
-#define ACI_RULE_OPERATION_H
+#ifndef ACI_RULE_OPERATION_TYPE_H
+#define ACI_RULE_OPERATION_TYPE_H
 
 ///
 /// @brief
@@ -66,6 +66,6 @@ typedef enum
     ///
     ENDS_WITH = 1 << 11
 }
-aci_rule_operation_t;
+aci_rule_operation_type_t;
 
-#endif  // ACI_RULE_OPERATION_H
+#endif  // ACI_RULE_OPERATION_TYPE_H

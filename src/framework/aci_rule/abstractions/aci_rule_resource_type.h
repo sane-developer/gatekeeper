@@ -1,5 +1,5 @@
-#ifndef ACI_RULE_PARAMETER_H
-#define ACI_RULE_PARAMETER_H
+#ifndef ACI_RULE_RESOURCE_TYPE_H
+#define ACI_RULE_RESOURCE_TYPE_H
 
 ///
 /// @brief
@@ -46,6 +46,6 @@ typedef enum
     ///
     TIME_OF_DAY
 }
-aci_rule_parameter_t;
+aci_rule_resource_type_t;
 
-#endif  // ACI_RULE_PARAMETER_H
+#endif  // ACI_RULE_RESOURCE_TYPE_H

@@ -1,89 +1,63 @@
 #include "aci_rule_evaluator.h"
 #include "aci_rule_operation_provider.h"
 
-typedef struct
+static bool has_satisfied_operation(const aci_rule_condition_t* condition, const bind_request_t* request)
 {
-    bool or_state;
-
-    bool and_state;
-
-    bool skip_till_next_or;
-
-    aci_rule_operator_t operator;
-}
-aci_rule_evaluator_state_t;
-
-static bool handle_or_operator(aci_rule_evaluator_state_t* state, aci_rule_expression_t* head, bind_request_t* request)
-{
-    if (state->and_state)
-    {
-        return true; // The output will always be 1 at this point.
-    }
-
-    state->and_state |= operation(head->operands, request);
-
-    state->or_state &= state.and_state;
-
-    state->and_state = true; // The substate must be reset in case the next operation is AND;
-
-    return false;
+    return get_operation(condition->parameter, condition->operation)(condition->operands, request);
 }
 
-static bool handle_and_operator(aci_rule_evaluator_state_t* state, aci_rule_expression_t* head, bind_request_t* request)
+static bool has_satisfied_subcondition(const aci_rule_condition_t** subcondition, const bind_request_t* request)
 {
-    if (!state->and_state)
-    {
-        state->skip_till_next_or = true;
+    bool state = true;
 
-        return false;
+    for (const aci_rule_condition_t* subexpression = *subcondition; subexpression->next != NULL; subexpression = subexpression->next)
+    {
+        state &= has_satisfied_operation(subexpression, request);
+
+        if (!state)
+        {
+            return false;
+        }
+
+        if (subexpression->operator == OR)
+        {
+            break;
+        }
     }
 
-    state->and_state &= operation(head->operands, request);
+    return state;
 }
 
 static bool has_satisfied_condition(const aci_rule_condition_t* condition, const bind_request_t* request)
 {
-    const struct aci_rule_expression_t* head;
+    bool state = false;
 
-    aci_rule_evaluator_state_t state =
+    for (const aci_rule_condition_t* expression = condition; expression->next != NULL; expression = expression->next)
     {
-        .or_state = 1,
-        .and_state = 1,
-        .skip_till_next_or = 0,
-        .operator = AND
-    };
-
-    while (head)
-    {
-        aci_rule_operation operation = get_operation(head->parameter, state.head->operation);
-
-        switch (state.operator)
+        switch (expression->operator)
         {
             case AND:
-                handle_and_operator();
+                state |= has_satisfied_subcondition(&expression, request);
                 break;
             case OR:
-                handle_or_operator();
+                state |= has_satisfied_operation(expression, request);
                 break;
-            case TERMINATOR:
-                return state.or_state & state.and_state; // The end of the evaluation.
         }
 
-        state.operator = head->operator;
-
-        head = head->next;
+        if (state)
+        {
+            return true;
+        }
     }
 
-    return state.or_state;
+    return state;
 }
 
 static bool has_satisfied_any_conditions(const aci_rule_condition_t** conditions, const bind_request_t* request)
 {
     for (size_t i = 0; i < MAXIMUM_CONDITIONS_COUNT; ++i)
     {
-        const aci_rule_condition_t* condition = conditions[i];
-
-        if (has_satisfied_condition(condition, request))
+        if (has_satisfied_condition(conditions[i], request))
         {
             return true;
         }
@@ -96,9 +70,7 @@ static bool has_satisfied_all_conditions(const aci_rule_condition_t** conditions
 {
     for (size_t i = 0; i < MAXIMUM_CONDITIONS_COUNT; ++i)
     {
-        const aci_rule_condition_t* condition = conditions[i];
-
-        if (!has_satisfied_condition(condition, request))
+        if (!has_satisfied_condition(conditions[i], request))
         {
             return false;
         }

@@ -1,6 +1,6 @@
 #include "aci_rule_operation_provider.h"
 
-aci_rule_operation get_operation(aci_rule_parameter_t parameter, aci_rule_operation_t operation)
+aci_rule_operation_t get_operation(aci_rule_resource_type_t parameter, aci_rule_operation_type_t operation)
 {
     switch (parameter)
     {

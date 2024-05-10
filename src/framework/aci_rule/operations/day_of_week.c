@@ -15,7 +15,7 @@ static bool between(const aci_rule_operand_t* operands, const bind_request_t* re
     return 0;
 }
 
-aci_rule_operation get_day_of_week_operation(aci_rule_operation_t operation)
+aci_rule_operation_t get_day_of_week_operation(aci_rule_operation_type_t operation)
 {
     switch (operation)
     {
