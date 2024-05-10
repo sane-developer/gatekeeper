@@ -1,4 +1,3 @@
-#include "bind_request_handler.h"
 #include "plugin_registrar.h"
 
 bool get_plugin_identity(Slapi_PBlock* block, Slapi_ComponentId* identity)
@@ -16,9 +15,9 @@ bool set_plugin_ldap_protocol_version(Slapi_PBlock* block)
     return slapi_pblock_set(block, SLAPI_PLUGIN_VERSION, SLAPI_PLUGIN_VERSION_03) != 0;
 }
 
-bool set_plugin_bind_request_handler(Slapi_PBlock* block)
+bool set_plugin_bind_request_handler(Slapi_PBlock* block, bind_request_handler_t handler)
 {
-    return slapi_pblock_set(block, SLAPI_PLUGIN_PRE_BIND_FN, handle_bind_request) != 0;
+    return slapi_pblock_set(block, SLAPI_PLUGIN_PRE_BIND_FN, handler) != 0;
 }
 
 bool set_plugin_aci_rules(Slapi_PBlock* block, aci_rules_t* grant_rules, aci_rules_t* deny_rules)

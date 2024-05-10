@@ -2,9 +2,9 @@
 #define ACI_RULE_CONDITION_H
 
 #include "aci_rule_operand.h"
-#include "aci_rule_operator.h"
-#include "aci_rule_operation.h"
-#include "aci_rule_parameter.h"
+#include "aci_rule_operator_type.h"
+#include "aci_rule_operation_type.h"
+#include "aci_rule_resource_type.h"
 
 ///
 /// @brief
@@ -24,17 +24,17 @@ typedef struct aci_rule_expression_t
     ///
     /// @brief
     ///
-    aci_rule_operator_t operator;
+    aci_rule_operator_type_t operator;
 
     ///
     /// @brief
     ///
-    aci_rule_operation_t operation;
+    aci_rule_operation_type_t operation;
 
     ///
     /// @brief
     ///
-    aci_rule_parameter_t parameter;
+    aci_rule_resource_type_t parameter;
 
     ///
     /// @brief

@@ -1,6 +1,5 @@
 #include "plugin_registrar_actions.h"
 #include "plugin_registrar_events.h"
-#include "plugin_registrar_status.h"
 
 plugin_registrar_status_t register_plugin(Slapi_PBlock* block)
 {

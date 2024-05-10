@@ -20,6 +20,46 @@ static bind_request_status_t deny_bind_request(Slapi_PBlock* block, bind_request
     return REQUEST_DENIED;
 }
 
+static bind_request_status_t satisfies_grant_rules(const aci_rules_t* rules, bind_request_t* request)
+{
+    for (size_t i = 0; i < rules->count; ++i)
+    {
+        aci_rule_t* rule = rules->items[i];
+
+        if (!has_applied_rule(rule, request))
+        {
+            continue;
+        }
+
+        if (!has_satisfied_rule(rule, request))
+        {
+            return REQUEST_DENIED;
+        }
+    }
+
+    return REQUEST_SATISFIED_GRANT_RULES;
+}
+
+static bind_request_status_t satisfies_deny_rules(const aci_rules_t* rules, bind_request_t* request)
+{
+    for (size_t i = 0; i < rules->count; ++i)
+    {
+        aci_rule_t* rule = rules->items[i];
+
+        if (!has_applied_rule(rule, request))
+        {
+            continue;
+        }
+
+        if (has_satisfied_rule(rule, request))
+        {
+            return REQUEST_DENIED;
+        }
+    }
+
+    return REQUEST_SATISFIED_DENY_RULES;
+}
+
 bind_request_status_t handle_bind_request(Slapi_PBlock* block, aci_rules_t* grant_rules, aci_rules_t* deny_rules)
 {
     bind_request_t request = {0};
@@ -31,7 +71,7 @@ bind_request_status_t handle_bind_request(Slapi_PBlock* block, aci_rules_t* gran
         return deny_bind_request(block, &request, status_after_fetching_request_parameters);
     }
 
-    bind_request_status_t status_after_deny_rules_evaluation = evaluate_against_deny_rules(deny_rules, &request);
+    bind_request_status_t status_after_deny_rules_evaluation = satisfies_deny_rules(deny_rules, &request);
 
     if (status_after_deny_rules_evaluation != REQUEST_SATISFIED_DENY_RULES)
     {
