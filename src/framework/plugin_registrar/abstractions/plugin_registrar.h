@@ -2,8 +2,14 @@
 #define PLUGIN_REGISTRAR_H
 
 #include "aci_rule.h"
+#include "bind_request_status.h"
 #include <dirsrv/slapi-plugin.h>
 #include <stdbool.h>
+
+///
+/// @brief
+///
+typedef bind_request_status_t (*bind_request_handler_t)(Slapi_PBlock*);
 
 ///
 /// @brief
@@ -33,7 +39,7 @@ bool set_plugin_ldap_protocol_version(Slapi_PBlock* block);
 /// @param block
 /// @return
 ///
-bool set_plugin_bind_request_handler(Slapi_PBlock* block);
+bool set_plugin_bind_request_handler(Slapi_PBlock* block, bind_request_handler_t handler);
 
 ///
 /// @brief
