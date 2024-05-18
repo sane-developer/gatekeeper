@@ -1,4 +1,4 @@
-#include "plugin_bootstrapper.h"
+#include "plugin_registration_handler.h"
 
 bool get_plugin_identity(Slapi_PBlock* block, Slapi_ComponentId* identity)
 {

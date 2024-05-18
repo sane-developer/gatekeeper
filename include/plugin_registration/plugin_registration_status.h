@@ -1,0 +1,12 @@
+#ifndef PLUGIN_REGISTRATION_STATUS_H
+#define PLUGIN_REGISTRATION_STATUS_H
+
+typedef enum
+{
+    REGISTRATION_ACCEPTED,
+
+    REGISTRATION_ABORTED
+}
+plugin_registration_status_t;
+
+#endif  // PLUGIN_REGISTRATION_STATUS_H

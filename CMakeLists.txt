@@ -29,9 +29,9 @@ add_library(gatekeeper_sdk SHARED
 )
 
 target_include_directories(gatekeeper_sdk PUBLIC
-    ./lib/
-    ./lib/aci_rule/
-    ./lib/bind_request/
+    ./include/aci_rule/
+    ./include/bind_request/
+    ./include/plugin_registration/
 )
 
 target_link_libraries(gatekeeper_sdk PUBLIC

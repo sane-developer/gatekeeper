@@ -1,9 +1,13 @@
 #include "bind_request_evaluator.h"
-#include "plugin_bootstrapper.h"
+#include "bind_request_resolver.h"
+#include "plugin_registration_errors.h"
+#include "plugin_registration_handler.h"
+#include "plugin_registration_event_dispatcher.h"
+#include "plugin_registration_status.h"
 
-static aci_rule_t* plugin_grant_rules;
+static aci_rule_linked_list_t* plugin_grant_rules;
 
-static aci_rule_t* plugin_deny_rules;
+static aci_rule_linked_list_t* plugin_deny_rules;
 
 static Slapi_ComponentId* plugin_identity;
 
@@ -17,29 +21,46 @@ static Slapi_PluginDesc plugin_description =
 
 static bind_request_status_t handle_bind_request(Slapi_PBlock* block)
 {
-    return evaluate_bind_request(block, plugin_grant_rules, plugin_deny_rules);
+    bind_request_t request = {0};
+
+    if (!resolve_bind_request_parameters(block, &request))
+    {
+        return deny_bind_request(&request);
+    }
+
+    if (has_triggered_any_deny_rules(block, plugin_deny_rules, &request))
+    {
+        return deny_bind_request(&request);
+    }
+
+    if (has_triggered_any_grant_rules(block, plugin_grant_rules, &request))
+    {
+        return deny_bind_request(&request);
+    }
+
+    return grant_bind_request(&request);
 }
 
-static plugin_bootstrapper_status_t signal_finished_registration(Slapi_PBlock* block)
+static plugin_registration_status_t signal_accepted_registration(Slapi_PBlock* block)
 {
-    on_finished_registration((finished_registration_event_args_t) {
+    on_accepted_registration((accepted_registration_event_args_t) {
         .block = block
     });
 
-    return REGISTERED_PLUGIN;
+    return REGISTRATION_ACCEPTED;
 }
 
-static plugin_bootstrapper_status_t signal_aborted_registration(Slapi_PBlock* block, plugin_bootstrapper_error_t error)
+static plugin_registration_status_t signal_aborted_registration(Slapi_PBlock* block, plugin_registration_error_t error)
 {
     on_aborted_registration((aborted_registration_event_args_t) {
         .block = block,
         .error = error
     });
 
-    return error;
+    return REGISTRATION_ABORTED;
 }
 
-plugin_bootstrapper_status_t register_plugin(Slapi_PBlock* block)
+plugin_registration_status_t register_plugin(Slapi_PBlock* block)
 {
     if (!get_plugin_identity(block, plugin_identity))
     {
@@ -66,5 +87,5 @@ plugin_bootstrapper_status_t register_plugin(Slapi_PBlock* block)
         return signal_aborted_registration(block, FAILED_TO_SET_PLUGIN_BIND_POLICY);
     }
 
-    return signal_finished_registration(block);
+    return signal_accepted_registration(block);
 }

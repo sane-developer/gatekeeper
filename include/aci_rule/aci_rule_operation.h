@@ -1,7 +1,9 @@
-#ifndef ACI_RULE_H
-#define ACI_RULE_H
+#ifndef ACI_RULE_OPERATION_H
+#define ACI_RULE_OPERATION_H
 
 #include <nspr4/prio.h>
+
+#define OPERANDS_LIMIT 5
 
 typedef enum
 {
@@ -71,8 +73,6 @@ typedef union
 }
 aci_rule_operand_t;
 
-#define OPERANDS_LIMIT 5
-
 typedef struct
 {
     aci_rule_operand_t operands[OPERANDS_LIMIT];
@@ -85,30 +85,4 @@ typedef struct
 }
 aci_rule_operation_t;
 
-#define OPERATIONS_LIMIT 5
-
-typedef struct
-{
-    char* label;
-
-    aci_rule_operation_t operations[OPERATIONS_LIMIT];
-}
-aci_rule_condition_t;
-
-#define CONDITIONS_LIMIT 5
-
-typedef struct aci_rule_t
-{
-    char* label;
-
-    aci_rule_condition_t exclude[CONDITIONS_LIMIT];
-
-    aci_rule_condition_t apply[CONDITIONS_LIMIT];
-
-    aci_rule_condition_t bind[CONDITIONS_LIMIT];
-
-    struct aci_rule_t* next;
-}
-aci_rule_t;
-
-#endif  // ACI_RULE_H
+#endif  // ACI_RULE_OPERATION_H

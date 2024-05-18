@@ -1,7 +1,7 @@
 #ifndef ACI_RULE_OPERATION_RESOLVER_H
 #define ACI_RULE_OPERATION_RESOLVER_H
 
-#include "aci_rule.h"
+#include "aci_rule_operation.h"
 #include "bind_request.h"
 #include <stdbool.h>
 

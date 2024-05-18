@@ -1,8 +1,8 @@
-#ifndef BIND_REQUEST_EVALUATOR_H
-#define BIND_REQUEST_EVALUATOR_H
+#ifndef BIND_REQUEST_EVENT_DISPATCHER_H
+#define BIND_REQUEST_EVENT_DISPATCHER_H
 
-#include "aci_rule.h"
 #include "bind_request.h"
+#include "bind_request_resolver_errors.h"
 #include <dirsrv/slapi-plugin.h>
 
 typedef struct
@@ -25,6 +25,14 @@ typedef struct
 }
 denied_bind_request_event_args_t;
 
+typedef struct
+{
+    Slapi_PBlock* block;
+
+    bind_request_resolver_error_t error;
+}
+unresolved_bind_request_parameter_event_args_t;
+
 void on_granted_bind_request(
     granted_bind_request_event_args_t args
 );
@@ -33,10 +41,8 @@ void on_denied_bind_request(
     denied_bind_request_event_args_t args
 );
 
-bind_request_status_t evaluate_bind_request(
-    Slapi_PBlock* block,
-    aci_rule_t* grant_rules,
-    aci_rule_t* deny_rules
+void on_unresolved_bind_request_parameter(
+    unresolved_bind_request_parameter_event_args_t args
 );
 
-#endif  // BIND_REQUEST_EVALUATOR_H
+#endif  // BIND_REQUEST_EVENT_DISPATCHER_H

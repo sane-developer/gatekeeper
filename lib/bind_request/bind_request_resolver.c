@@ -1,4 +1,5 @@
 #include "bind_request_resolver.h"
+#include "bind_request_event_dispatcher.h"
 
 static bool fetch_client_dn(Slapi_PBlock* block, char* dn)
 {
@@ -42,7 +43,7 @@ static bool signal_unresolved_bind_request_parameter(Slapi_PBlock* block, bind_r
     return false;
 }
 
-bool has_resolved_bind_request_parameters(Slapi_PBlock* block, bind_request_t* request)
+bool resolve_bind_request_parameters(Slapi_PBlock* block, bind_request_t* request)
 {
     if (!fetch_client_dn(block, request->dn))
     {
