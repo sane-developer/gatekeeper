@@ -4,6 +4,8 @@
 #include "aci_rule.h"
 #include "bind_request_status.h"
 #include <dirsrv/slapi-plugin.h>
+#include "plugin_registration_errors.h"
+#include "plugin_registration_status.h"
 #include <stdbool.h>
 
 typedef bind_request_status_t (*bind_request_handler_t)(Slapi_PBlock*);
@@ -31,6 +33,15 @@ bool set_plugin_bind_policy(
     Slapi_PBlock* block,
     aci_rule_linked_list_t* grant_rules,
     aci_rule_linked_list_t* deny_rules
+);
+
+plugin_registration_status_t signal_accepted_registration(
+    Slapi_PBlock* block
+);
+
+plugin_registration_status_t signal_aborted_registration(
+    Slapi_PBlock* block,
+    plugin_registration_error_t error
 );
 
 #endif  // PLUGIN_REGISTRATION_HANDLER_H

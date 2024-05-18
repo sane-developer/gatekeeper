@@ -1,5 +1,5 @@
-#include "bind_request_resolver.h"
 #include "bind_request_event_dispatcher.h"
+#include "bind_request_resolver.h"
 
 static bool fetch_client_dn(Slapi_PBlock* block, char* dn)
 {

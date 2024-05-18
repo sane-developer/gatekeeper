@@ -19,12 +19,12 @@ bool has_triggered_any_deny_rules(
     aci_rule_identity_t* rule_identity
 );
 
-bind_request_status_t grant_bind_request(
+bind_request_status_t signal_granted_bind_request(
     Slapi_PBlock* block,
     bind_request_t* request
 );
 
-bind_request_status_t deny_bind_request(
+bind_request_status_t signal_denied_bind_request(
     Slapi_PBlock* block,
     bind_request_t* request,
     aci_rule_identity_t* rule_identity
