@@ -5,6 +5,14 @@
 
 #define CONDITIONS_LIMIT 5
 
+typedef struct
+{
+    char* rule_label;
+
+    char* condition_label;
+}
+aci_rule_identity_t;
+
 typedef struct aci_rule_t
 {
     char* label;

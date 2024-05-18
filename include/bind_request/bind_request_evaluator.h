@@ -8,23 +8,26 @@
 #include <stdbool.h>
 
 bool has_triggered_any_grant_rules(
-    Slapi_PBlock* block,
+    bind_request_t* request,
     aci_rule_linked_list_t* rules,
-    bind_request_t* request
+    aci_rule_identity_t* rule_identity
 );
 
 bool has_triggered_any_deny_rules(
-    Slapi_PBlock* block,
+    bind_request_t* request,
     aci_rule_linked_list_t* rules,
-    bind_request_t* request
+    aci_rule_identity_t* rule_identity
 );
 
 bind_request_status_t grant_bind_request(
+    Slapi_PBlock* block,
     bind_request_t* request
 );
 
 bind_request_status_t deny_bind_request(
-    bind_request_t* request
+    Slapi_PBlock* block,
+    bind_request_t* request,
+    aci_rule_identity_t* rule_identity
 );
 
 #endif  // BIND_REQUEST_EVALUATOR_H
