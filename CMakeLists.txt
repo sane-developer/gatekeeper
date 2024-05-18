@@ -30,31 +30,13 @@ add_library(gatekeeper_sdk SHARED
 
 target_include_directories(gatekeeper_sdk PUBLIC
     ./lib/
-    ./lib/abstractions/
-    ./lib/models/
-    ./lib/models/rule/
-    ./lib/models/status/
+    ./lib/aci_rule/
+    ./lib/bind_request/
 )
 
 target_link_libraries(gatekeeper_sdk PUBLIC
     -L/usr/lib64/dirsrv
     -lnspr4
-)
-
-#
-#  Builds the third party components.
-#
-
-file(GLOB_RECURSE third_party_files
-    ./user/*.c
-)
-
-add_library(gatekeeper_third_party SHARED
-    ${third_party_files}
-)
-
-target_link_libraries(gatekeeper_third_party PUBLIC
-    gatekeeper_sdk
 )
 
 #
@@ -70,5 +52,5 @@ add_library(gatekeeper_plugin SHARED
 )
 
 target_link_libraries(gatekeeper_plugin PRIVATE
-    gatekeeper_third_party
+    gatekeeper_sdk
 )
