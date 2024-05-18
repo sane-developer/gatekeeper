@@ -27,7 +27,7 @@ void on_unresolved_bind_request_parameter(unresolved_bind_request_parameter_even
     // REMARK: Implement based on business requirements.
 }
 
-void on_finished_registration(accepted_registration_event_args_t args)
+void on_accepted_registration(accepted_registration_event_args_t args)
 {
     // REMARK: Implement based on business requirements.
 }

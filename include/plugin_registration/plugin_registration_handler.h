@@ -4,7 +4,7 @@
 #include "aci_rule.h"
 #include "bind_request_status.h"
 #include <dirsrv/slapi-plugin.h>
-#include "plugin_registration_errors.h"
+#include "plugin_registration_error.h"
 #include "plugin_registration_status.h"
 #include <stdbool.h>
 

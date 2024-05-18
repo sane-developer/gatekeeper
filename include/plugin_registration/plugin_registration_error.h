@@ -1,5 +1,5 @@
-#ifndef PLUGIN_REGISTRATION_ERRORS_H
-#define PLUGIN_REGISTRATION_ERRORS_H
+#ifndef PLUGIN_REGISTRATION_ERROR_H
+#define PLUGIN_REGISTRATION_ERROR_H
 
 typedef enum
 {
@@ -15,4 +15,4 @@ typedef enum
 }
 plugin_registration_error_t;
 
-#endif  // PLUGIN_REGISTRATION_ERRORS_H
+#endif  // PLUGIN_REGISTRATION_ERROR_H

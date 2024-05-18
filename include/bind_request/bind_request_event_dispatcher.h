@@ -2,7 +2,7 @@
 #define BIND_REQUEST_EVENT_DISPATCHER_H
 
 #include "bind_request.h"
-#include "bind_request_resolver_errors.h"
+#include "bind_request_resolver_error.h"
 #include <dirsrv/slapi-plugin.h>
 
 typedef struct
