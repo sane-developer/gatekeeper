@@ -1,4 +1,4 @@
-#include "aci_rule_operation_resolver.h"
+#include "aci_rule_resolver.h"
 
 static bool equals(aci_rule_operand_t* operands, bind_request_t* request)
 {
@@ -15,7 +15,7 @@ static bool range(aci_rule_operand_t* operands, bind_request_t* request)
     return false; // TODO: Implement.
 }
 
-aci_rule_operation_handler_t resolve_operation_for_dns_operand(aci_rule_operation_type_t operation_type)
+aci_rule_operation_handler_t resolve_operation_for_ip_operand(aci_rule_operation_type_t operation_type)
 {
     switch (operation_type)
     {

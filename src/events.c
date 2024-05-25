@@ -1,16 +1,5 @@
-#include "aci_rule_event_dispatcher.h"
 #include "bind_request_event_dispatcher.h"
 #include "plugin_registration_event_dispatcher.h"
-
-void on_applied_aci_rule(applied_aci_rule_event_args_t args)
-{
-    // REMARK: Implement based on business requirements.
-}
-
-void on_triggered_aci_rule(triggered_aci_rule_event_args_t args)
-{
-    // REMARK: Implement based on business requirements.
-}
 
 void on_granted_bind_request(granted_bind_request_event_args_t args)
 {

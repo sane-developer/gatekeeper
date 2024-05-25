@@ -1,4 +1,4 @@
-#include "aci_rule_operation_resolver.h"
+#include "aci_rule_resolver.h"
 
 aci_rule_operation_handler_t resolve_operation_for_operand(
     aci_rule_operation_type_t operation_type,

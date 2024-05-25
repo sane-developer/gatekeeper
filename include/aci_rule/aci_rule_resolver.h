@@ -1,5 +1,5 @@
-#ifndef ACI_RULE_OPERATION_RESOLVER_H
-#define ACI_RULE_OPERATION_RESOLVER_H
+#ifndef ACI_RULE_RESOLVER_H
+#define ACI_RULE_RESOLVER_H
 
 #include "aci_rule_operation.h"
 #include "bind_request.h"
@@ -40,4 +40,4 @@ aci_rule_operation_handler_t resolve_operation_for_time_operand(
     aci_rule_operation_type_t operation_type
 );
 
-#endif  // ACI_RULE_OPERATION_RESOLVER_H
+#endif  // ACI_RULE_RESOLVER_H

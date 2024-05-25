@@ -5,14 +5,6 @@
 
 #define CONDITIONS_LIMIT 5
 
-typedef struct
-{
-    char* rule_label;
-
-    char* condition_label;
-}
-aci_rule_identity_t;
-
 typedef struct aci_rule_t
 {
     char* label;
@@ -22,15 +14,9 @@ typedef struct aci_rule_t
     aci_rule_condition_t apply[CONDITIONS_LIMIT];
 
     aci_rule_condition_t bind[CONDITIONS_LIMIT];
-}
-aci_rule_t;
 
-typedef struct
-{
-    aci_rule_t* item;
-
-    aci_rule_t* next;
+    struct aci_rule_t* next;
 }
-aci_rule_linked_list_t;
+aci_rule_t, aci_rule_linked_list_t;
 
 #endif  // ACI_RULE_H

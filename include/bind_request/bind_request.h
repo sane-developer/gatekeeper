@@ -16,6 +16,8 @@ typedef struct
     char* attributes;
 
     PRExplodedTime datetime;
+
+    char* reason;
 }
 bind_request_t;
 

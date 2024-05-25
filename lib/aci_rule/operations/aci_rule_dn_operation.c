@@ -1,4 +1,4 @@
-#include "aci_rule_operation_resolver.h"
+#include "aci_rule_resolver.h"
 
 static bool equals(aci_rule_operand_t* operands, bind_request_t* request)
 {
