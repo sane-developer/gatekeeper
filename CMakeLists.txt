@@ -35,8 +35,15 @@ target_include_directories(gatekeeper_sdk PUBLIC
 )
 
 target_link_libraries(gatekeeper_sdk PUBLIC
-    -L/usr/lib64/dirsrv
-    -lnspr4
+    389ds
+    ldap
+    lber
+    nss3
+    smime3
+    nssutil3
+    sasl2
+    ssl
+    crypto
 )
 
 #
@@ -54,3 +61,17 @@ add_library(gatekeeper_plugin SHARED
 target_link_libraries(gatekeeper_plugin PRIVATE
     gatekeeper_sdk
 )
+
+#
+#  Builds the tests.
+#
+
+file(GLOB_RECURSE test_files
+    ./tests/*.c
+)
+
+foreach(test_file ${test_files})
+    get_filename_component(test_name ${test_file} NAME_WE)
+    add_executable(${test_name} ${test_file})
+    target_link_libraries(${test_name} PRIVATE gatekeeper_sdk)
+endforeach()

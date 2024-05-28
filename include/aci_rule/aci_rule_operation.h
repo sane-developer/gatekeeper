@@ -51,7 +51,9 @@ typedef enum
 {
     AND,
 
-    OR
+    OR,
+
+    TERMINATE
 }
 aci_rule_operator_type_t;
 

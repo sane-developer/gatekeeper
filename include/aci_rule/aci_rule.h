@@ -13,7 +13,7 @@ typedef struct aci_rule_t
 
     aci_rule_condition_t apply[CONDITIONS_LIMIT];
 
-    aci_rule_condition_t bind[CONDITIONS_LIMIT];
+    aci_rule_condition_t satisfy[CONDITIONS_LIMIT];
 
     struct aci_rule_t* next;
 }
