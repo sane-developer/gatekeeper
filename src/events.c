@@ -1,27 +1,26 @@
-#include "bind_request_event_dispatcher.h"
-#include "plugin_registration_event_dispatcher.h"
+#include "plugin.h"
 
-void on_granted_bind_request(granted_bind_request_event_args_t args)
+void on_plugin_registered(const on_plugin_registered_event_args_t* args)
 {
-    // REMARK: Implement based on business requirements.
+    // TODO: Implement based on business requirements.
 }
 
-void on_denied_bind_request(denied_bind_request_event_args_t args)
+void on_plugin_unregistered(const on_plugin_unregistered_event_args_t* args)
 {
-    // REMARK: Implement based on business requirements.
+    // TODO: Implement based on business requirements.
 }
 
-void on_unresolved_bind_request_parameter(unresolved_bind_request_parameter_event_args_t args)
+void on_bind_request_granted(const on_bind_request_granted_event_args_t* args)
 {
-    // REMARK: Implement based on business requirements.
+    // TODO: Implement based on business requirements.
 }
 
-void on_accepted_registration(accepted_registration_event_args_t args)
+void on_bind_request_denied(const on_bind_request_denied_event_args_t* args)
 {
-    // REMARK: Implement based on business requirements.
+    // TODO: Implement based on business requirements.
 }
 
-void on_aborted_registration(aborted_registration_event_args_t args)
+void on_bind_request_unresolved(const on_bind_request_unresolved_event_args_t* args)
 {
-    // REMARK: Implement based on business requirements.
+    // TODO: Implement based on business requirements.
 }
