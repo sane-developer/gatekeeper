@@ -87,7 +87,8 @@ endif()
 #
 
 file(GLOB plugin_files
-    ./src/*.c
+    ./plugin/*.c
+    ./user/*.c
 )
 
 add_library(gatekeeper_plugin SHARED

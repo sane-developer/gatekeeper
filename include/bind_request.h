@@ -157,6 +157,8 @@ bind_request_status_t satisfies_deny_type_rules(
 /// @brief
 /// @param request
 ///
-void dispose_bind_request(bind_request_t* request);
+void dispose_bind_request(
+    bind_request_t* request
+);
 
 #endif  // BIND_REQUEST_H
