@@ -83,25 +83,25 @@ if(NOT LIB_SASL2)
 endif()
 
 #
-#  Builds the plugin.
+#  Builds the core of the plugin.
 #
 
-file(GLOB plugin_files
-    ./plugin/*.c
-    ./user/*.c
+file(GLOB core_files
+    ./core/src/bind_request/*.c
+    ./core/src/plugin/*.c
 )
 
-add_library(gatekeeper_plugin SHARED
-    ${plugin_files}
+add_library(gatekeeper_core SHARED
+    ${core_files}
 )
 
-target_include_directories(gatekeeper_plugin PRIVATE
+target_include_directories(gatekeeper_core PUBLIC
     /usr/include/dirsrv/
     /usr/include/nspr4/
-    ./include/
+    ./core/include/
 )
 
-target_link_libraries(gatekeeper_plugin PRIVATE
+target_link_libraries(gatekeeper_core PUBLIC
     ${LIB_389DS}
     ${LIB_SSL}
     ${LIB_CRYPTO}
@@ -112,3 +112,47 @@ target_link_libraries(gatekeeper_plugin PRIVATE
     ${LIB_NSSUTIL3}
     ${LIB_SASL2}
 )
+
+#
+#  Builds the plugin.
+#
+
+file(GLOB plugin_files
+    ./plugin/*.c
+)
+
+add_library(gatekeeper_plugin SHARED
+    ${plugin_files}
+)
+
+target_link_libraries(gatekeeper_plugin PRIVATE
+    gatekeeper_core
+)
+
+#
+#  Builds the tests.
+#
+
+file(GLOB test_files
+    ./core/tests/*.c
+)
+
+file(GLOB test_shared_files
+    ./core/tests/shared/*.c
+)
+
+foreach(test_file_path ${test_files})
+
+    get_filename_component(
+        test_name ${test_file_path} NAME_WE
+    )
+
+    add_executable(
+        ${test_name} ${test_file_path} ${test_shared_files}
+    )
+
+    target_link_libraries(${test_name} PRIVATE
+        gatekeeper_core
+    )
+
+endforeach()

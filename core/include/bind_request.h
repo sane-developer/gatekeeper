@@ -56,7 +56,7 @@ typedef struct
 {
     Slapi_PBlock* block;
 
-    bind_request_t* request;
+    const bind_request_t* request;
 }
 on_bind_request_granted_event_args_t;
 
@@ -67,11 +67,11 @@ typedef struct
 {
     Slapi_PBlock* block;
 
-    bind_request_t* request;
+    const bind_request_t* request;
 
-    char* violated_rule_label;
+    const char* violated_rule_label;
 
-    char* violated_condition_label;
+    const char* violated_condition_label;
 }
 on_bind_request_denied_event_args_t;
 
@@ -92,25 +92,19 @@ on_bind_request_unresolved_event_args_t;
 /// @brief
 /// @param args
 ///
-void on_bind_request_granted(
-    const on_bind_request_granted_event_args_t* args
-);
+void on_bind_request_granted(on_bind_request_granted_event_args_t args);
 
 ///
 /// @brief
 /// @param args
 ///
-void on_bind_request_denied(
-    const on_bind_request_denied_event_args_t* args
-);
+void on_bind_request_denied(on_bind_request_denied_event_args_t args);
 
 ///
 /// @brief
 /// @param args
 ///
-void on_bind_request_unresolved(
-    const on_bind_request_unresolved_event_args_t* args
-);
+void on_bind_request_unresolved(on_bind_request_unresolved_event_args_t args);
 
 ///
 /// @brief
@@ -118,47 +112,30 @@ void on_bind_request_unresolved(
 /// @param request
 /// @return
 ///
-bind_request_status_t resolve_bind_request(
-    Slapi_PBlock* block,
-    bind_request_t* request
-);
-
-///
-/// @brief
-/// @param block
-/// @param policy
-/// @param rule_label
-/// @param condition_label
-/// @return
-///
-bind_request_status_t satisfies_grant_type_rules(
-    const bind_request_t* request,
-    const bind_policy_t* policy,
-    char* rule_label,
-    char* condition_label
-);
-
-///
-/// @brief
-/// @param block
-/// @param policy
-/// @param rule_label
-/// @param condition_label
-/// @return
-///
-bind_request_status_t satisfies_deny_type_rules(
-    const bind_request_t* request,
-    const bind_policy_t* policy,
-    char* rule_label,
-    char* condition_label
-);
+bind_request_status_t has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request);
 
 ///
 /// @brief
 /// @param request
 ///
-void dispose_bind_request(
-    bind_request_t* request
-);
+void dispose_bind_request(bind_request_t* request);
+
+///
+/// @brief
+/// @param block
+/// @param request
+/// @param policy
+/// @return
+///
+bool has_triggered_any_grant_rule(Slapi_PBlock* block, const bind_request_t* request, const bind_policy_t* policy);
+
+///
+/// @brief
+/// @param block
+/// @param request
+/// @param policy
+/// @return
+///
+bool has_triggered_any_deny_rule(Slapi_PBlock* block, const bind_request_t* request, const bind_policy_t* policy);
 
 #endif  // BIND_REQUEST_H

@@ -2,6 +2,7 @@
 #define ACI_RULE_H
 
 #include <nspr4/prio.h>
+#include <stdbool.h>
 
 ///
 /// @brief
@@ -59,7 +60,7 @@ typedef enum
 {
     DN,
 
-    GROUP,
+    GROUPS,
 
     IP,
 
@@ -134,6 +135,8 @@ typedef struct
     char label[CONDITION_LABEL_LENGTH_LIMIT];
 
     aci_rule_operation_t operations[OPERATIONS_LIMIT];
+
+    bool is_last;
 }
 aci_rule_condition_t;
 
@@ -149,6 +152,8 @@ typedef struct
     aci_rule_condition_t apply[CONDITIONS_LIMIT];
 
     aci_rule_condition_t satisfy[CONDITIONS_LIMIT];
+
+    bool is_last;
 }
 aci_rule_t;
 
