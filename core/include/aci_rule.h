@@ -43,9 +43,9 @@ typedef union
 
     char* group;
 
-    PRNetAddr* ip;
+    uint32_t ip;
 
-    PRNetAddr* dns;
+    uint32_t dns;
 
     uint32_t time;
 

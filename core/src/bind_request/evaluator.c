@@ -4,33 +4,94 @@
 
 static bool dn_matches(const char* source, const aci_rule_operand_t* operands)
 {
-    return false;
+    const char* pattern = operands[0].dn;
+
+    Slapi_Regex* handler = slapi_re_comp(pattern, NULL);
+
+    bool has_matched = slapi_re_exec_nt(handler, source);
+
+    slapi_re_free(handler);
+
+    return has_matched;
 }
 
 static bool dn_equals(const char* source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return strcmp(source, operands[0].dn) == 0;
 }
 
 static bool dn_starts_with(const char* source, const aci_rule_operand_t* operands)
 {
-    return false;
+    const char* target = operands[0].dn;
+
+    const size_t target_length = strlen(target);
+
+    return strncmp(source, target, target_length) == 0;
 }
 
 static bool dn_ends_with(const char* source, const aci_rule_operand_t* operands)
 {
-    return true;
+    const char* target = operands[0].dn;
+
+    const size_t source_length = strlen(source);
+
+    const size_t target_length = strlen(target);
+
+    return strcmp(source + source_length - target_length, target) == 0;
 }
 
 /* Available operations for groups attribute */
 
 static bool groups_all(const char* source, const aci_rule_operand_t* operands)
 {
-    return false;
+    char* tokens = (char*) source;
+
+    for (size_t i = 0; i < OPERANDS_LIMIT; ++i)
+    {
+        bool is_member_of_group = false;
+
+        char* required_group = operands[i].group;
+
+        char* actual_group;
+
+        while ((actual_group = strtok_r(tokens, ",", &tokens)))
+        {
+            if (strcmp(actual_group, required_group) == 0)
+            {
+                is_member_of_group = true;
+
+                break;
+            }
+        }
+
+        if (!is_member_of_group)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 static bool groups_any(const char* source, const aci_rule_operand_t* operands)
 {
+    char* tokens = (char*) source;
+
+    for (size_t i = 0; i < OPERANDS_LIMIT; ++i)
+    {
+        char* required_group = operands[i].group;
+
+        char* actual_group;
+
+        while ((actual_group = strtok_r(tokens, ",", &tokens)))
+        {
+            if (strcmp(actual_group, required_group) == 0)
+            {
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 
@@ -38,73 +99,63 @@ static bool groups_any(const char* source, const aci_rule_operand_t* operands)
 
 static bool ip_between(const PRNetAddr* source, const aci_rule_operand_t* operands)
 {
-    return false;
-}
-
-static bool ip_matches(const PRNetAddr* source, const aci_rule_operand_t* operands)
-{
-    return true;
+    return operands[0].ip <= source->inet.ip <= operands[1].ip;
 }
 
 static bool ip_equals(const PRNetAddr* source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].ip == source->inet.ip;
 }
 
 /* Available operations for DNS attribute */
 
 static bool dns_between(const PRNetAddr* source, const aci_rule_operand_t* operands)
 {
-    return false;
-}
-
-static bool dns_matches(const PRNetAddr* source, const aci_rule_operand_t* operands)
-{
-    return false;
+    return operands[0].ip <= source->inet.ip <= operands[1].ip;
 }
 
 static bool dns_equals(const PRNetAddr* source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].ip == source->inet.ip;
 }
 
 /* Available operations for time attribute */
 
 static bool time_after(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].time < source;
 }
 
 static bool time_before(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].time > source;
 }
 
 static bool time_between(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return true;
+    return operands[0].time <= source <= operands[1].time;
 }
 
 /* Available operations for weekday attribute */
 
 static bool weekday_after(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].weekday < source;
 }
 
 static bool weekday_before(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].weekday > source;
 }
 
 static bool weekday_between(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].weekday <= source <= operands[1].weekday;
 }
 
 static bool weekday_equals(uint32_t source, const aci_rule_operand_t* operands)
 {
-    return false;
+    return operands[0].weekday == source;
 }
 
 /* Resolvers for operations of each supported bind request attribute */
@@ -145,8 +196,6 @@ static bool has_satisfied_ip_operation(const PRNetAddr* ip, const aci_rule_opera
     {
         case BETWEEN:
             return ip_between(ip, operation->operands);
-        case MATCHES:
-            return ip_matches(ip, operation->operands);
         case EQUALS:
             return ip_equals(ip, operation->operands);
         default:
@@ -160,8 +209,6 @@ static bool has_satisfied_dns_operation(const PRNetAddr* dns, const aci_rule_ope
     {
         case BETWEEN:
             return dns_between(dns, operation->operands);
-        case MATCHES:
-            return dns_matches(dns, operation->operands);
         case EQUALS:
             return dns_equals(dns, operation->operands);
         default:

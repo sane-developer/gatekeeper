@@ -5,20 +5,6 @@ bool has_resolved_bind_policy(Slapi_PBlock* block, bind_policy_t* policy)
     aci_rule_condition_t managers = (aci_rule_condition_t)
     {
         .label = "managers",
-        .operations =
-        {
-            [0] = (aci_rule_operation_t)
-            {
-                .operand_type = GROUPS,
-                .operation_type = ANY,
-                .operator_type = NOP
-            }
-        }
-    };
-
-    aci_rule_condition_t executives = (aci_rule_condition_t)
-    {
-        .label = "executives",
         .is_last = true,
         .operations =
         {
@@ -26,7 +12,18 @@ bool has_resolved_bind_policy(Slapi_PBlock* block, bind_policy_t* policy)
             {
                 .operand_type = GROUPS,
                 .operation_type = ANY,
-                .operator_type = NOP
+                .operator_type = NOP,
+                .operands =
+                {
+                    [0] = (aci_rule_operand_t)
+                    {
+                        .group = "managers"
+                    },
+                    [1] = (aci_rule_operand_t)
+                    {
+                        .group = "executives"
+                    }
+                }
             }
         }
     };
@@ -41,7 +38,14 @@ bool has_resolved_bind_policy(Slapi_PBlock* block, bind_policy_t* policy)
             {
                 .operand_type = DN,
                 .operation_type = ENDS_WITH,
-                .operator_type = NOP
+                .operator_type = NOP,
+                .operands =
+                {
+                    [0] = (aci_rule_operand_t)
+                    {
+                        .dn = ""
+                    }
+                }
             }
         }
     };
@@ -55,13 +59,18 @@ bool has_resolved_bind_policy(Slapi_PBlock* block, bind_policy_t* policy)
             {
                 .operand_type = TIME,
                 .operation_type = BETWEEN,
-                .operator_type = OR
-            },
-            [1] = (aci_rule_operation_t)
-            {
-                .operand_type = TIME,
-                .operation_type = BETWEEN,
-                .operator_type = NOP
+                .operator_type = OR,
+                .operands =
+                {
+                    [0] = (aci_rule_operand_t)
+                    {
+                        .time = 1700
+                    },
+                    [1] = (aci_rule_operand_t)
+                    {
+                        .time = 2300
+                    }
+                }
             }
         }
     };
@@ -75,8 +84,19 @@ bool has_resolved_bind_policy(Slapi_PBlock* block, bind_policy_t* policy)
             [0] = (aci_rule_operation_t)
             {
                 .operand_type = IP,
-                .operation_type = MATCHES,
-                .operator_type = NOP
+                .operation_type = BETWEEN,
+                .operator_type = NOP,
+                .operands =
+                {
+                    [0] = (aci_rule_operand_t)
+                    {
+                        .ip = 3232235521
+                    },
+                    [1] = (aci_rule_operand_t)
+                    {
+                        .ip = 3232235530
+                    }
+                }
             }
         }
     };
@@ -87,7 +107,6 @@ bool has_resolved_bind_policy(Slapi_PBlock* block, bind_policy_t* policy)
         .exclude =
         {
             [0] = managers,
-            [1] = executives,
         },
         .apply =
         {
