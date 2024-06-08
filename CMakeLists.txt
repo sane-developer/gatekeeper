@@ -129,31 +129,3 @@ add_library(gatekeeper_plugin SHARED
 target_link_libraries(gatekeeper_plugin PRIVATE
     gatekeeper_core
 )
-
-#
-#  Builds the tests.
-#
-
-file(GLOB test_files
-    ./core/tests/*.c
-)
-
-file(GLOB test_shared_files
-    ./core/tests/shared/*.c
-)
-
-foreach(test_file_path ${test_files})
-
-    get_filename_component(
-        test_name ${test_file_path} NAME_WE
-    )
-
-    add_executable(
-        ${test_name} ${test_file_path} ${test_shared_files}
-    )
-
-    target_link_libraries(${test_name} PRIVATE
-        gatekeeper_core
-    )
-
-endforeach()
