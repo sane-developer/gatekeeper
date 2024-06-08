@@ -1,22 +1,28 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
+#include "aci_rule.h"
 #include "bind_request.h"
 
 ///
 /// @brief
 ///
-extern bind_policy_t plugin_bind_policy;
+extern aci_rules_t plugin_deny_aci_rules;
 
 ///
 /// @brief
 ///
-extern Slapi_ComponentId* plugin_identity;
+extern aci_rules_t plugin_grant_aci_rules;
 
 ///
 /// @brief
 ///
-extern Slapi_PluginDesc plugin_description;
+extern Slapi_ComponentId* plugin_component_identity;
+
+///
+/// @brief
+///
+extern Slapi_PluginDesc plugin_component_description;
 
 ///
 /// @brief
@@ -98,6 +104,15 @@ bool has_resolved_plugin_ldap_protocol_version(Slapi_PBlock* block);
 /// @return
 ///
 bool has_resolved_plugin_bind_request_handler(Slapi_PBlock* block);
+
+///
+/// @brief
+/// @param block
+/// @param grant_rules
+/// @param deny_rules
+/// @return
+///
+bool has_resolved_plugin_bind_policy(Slapi_PBlock* block, aci_rules_t* grant_rules, aci_rules_t* deny_rules);
 
 ///
 /// @brief

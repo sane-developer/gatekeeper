@@ -23,12 +23,12 @@ bind_request_status_t handle_bind_request(Slapi_PBlock* block)
         return deny_bind_request(&request);
     }
 
-    if (has_triggered_any_deny_rule(block, &request, &plugin_bind_policy))
+    if (has_triggered_any_deny_rule(block, &request, &plugin_deny_aci_rules))
     {
         return deny_bind_request(&request);
     }
 
-    if (has_triggered_any_grant_rule(block, &request, &plugin_bind_policy))
+    if (has_triggered_any_grant_rule(block, &request, &plugin_grant_aci_rules))
     {
         return deny_bind_request(&request);
     }

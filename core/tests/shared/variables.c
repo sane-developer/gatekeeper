@@ -1,7 +1,9 @@
 #include "plugin.h"
 
-bind_policy_t plugin_bind_policy = {0};
+aci_rules_t plugin_deny_aci_rules = {0};
 
-Slapi_ComponentId* plugin_identity = NULL;
+aci_rules_t plugin_grant_aci_rules = {0};
 
-Slapi_PluginDesc plugin_description = {0};
+Slapi_ComponentId* plugin_component_identity = NULL;
+
+Slapi_PluginDesc plugin_component_description = {0};

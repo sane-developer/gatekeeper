@@ -7,22 +7,22 @@
 ///
 /// @brief
 ///
-#define RULES_LIMIT 10
+#define RULES_COUNT_LIMIT 10
 
 ///
 /// @brief
 ///
-#define CONDITIONS_LIMIT 5
+#define CONDITIONS_COUNT_LIMIT 5
 
 ///
 /// @brief
 ///
-#define OPERATIONS_LIMIT 5
+#define OPERATIONS_COUNT_LIMIT 5
 
 ///
 /// @brief
 ///
-#define OPERANDS_LIMIT 5
+#define OPERANDS_COUNT_LIMIT 5
 
 ///
 /// @brief
@@ -37,21 +37,40 @@
 ///
 /// @brief
 ///
-typedef union
+typedef enum
 {
-    char* dn;
+    ALL,
 
-    char* group;
+    ANY,
 
-    uint32_t ip;
+    AFTER,
 
-    uint32_t dns;
+    BEFORE,
 
-    uint32_t time;
+    BETWEEN,
 
-    uint32_t weekday;
+    ENDS_WITH,
+
+    EQUALS,
+
+    MATCHES,
+
+    STARTS_WITH
 }
-aci_rule_operand_t;
+aci_rule_operation_type_t;
+
+///
+/// @brief
+///
+typedef enum
+{
+    NOP,
+
+    AND,
+
+    OR
+}
+aci_rule_operator_type_t;
 
 ///
 /// @brief
@@ -75,42 +94,32 @@ aci_rule_operand_type_t;
 ///
 /// @brief
 ///
-typedef enum
+typedef union
 {
-    ALL,
+    char* dn;
 
-    ANY,
+    char* group;
 
-    AFTER,
+    uint32_t ip;
 
-    BEFORE,
+    uint32_t dns;
 
-    BETWEEN,
+    uint32_t time;
 
-    ENDS_WITH,
-
-    EQUALS,
-
-    MATCHES,
-
-    STARTS_WITH,
-
-    RANGE
+    uint32_t weekday;
 }
-aci_rule_operation_type_t;
+aci_rule_operand_t;
 
 ///
 /// @brief
 ///
-typedef enum
+typedef struct
 {
-    NOP,
+    aci_rule_operand_t items[OPERANDS_COUNT_LIMIT];
 
-    AND,
-
-    OR
+    size_t count;
 }
-aci_rule_operator_type_t;
+aci_rule_operands_t;
 
 ///
 /// @brief
@@ -123,7 +132,7 @@ typedef struct
 
     aci_rule_operand_type_t operand_type;
 
-    aci_rule_operand_t operands[OPERANDS_LIMIT];
+    aci_rule_operands_t operands;
 }
 aci_rule_operation_t;
 
@@ -132,11 +141,20 @@ aci_rule_operation_t;
 ///
 typedef struct
 {
+    aci_rule_operation_t items[OPERATIONS_COUNT_LIMIT];
+
+    size_t count;
+}
+aci_rule_operations_t;
+
+///
+/// @brief
+///
+typedef struct
+{
     char label[CONDITION_LABEL_LENGTH_LIMIT];
 
-    aci_rule_operation_t operations[OPERATIONS_LIMIT];
-
-    bool is_last;
+    aci_rule_operations_t operations;
 }
 aci_rule_condition_t;
 
@@ -145,16 +163,84 @@ aci_rule_condition_t;
 ///
 typedef struct
 {
+    aci_rule_condition_t items[CONDITIONS_COUNT_LIMIT];
+
+    size_t count;
+}
+aci_rule_conditions_t;
+
+///
+/// @brief
+///
+typedef struct
+{
     char label[RULE_LABEL_LENGTH_LIMIT];
 
-    aci_rule_condition_t exclude[CONDITIONS_LIMIT];
+    aci_rule_conditions_t exclude;
 
-    aci_rule_condition_t apply[CONDITIONS_LIMIT];
+    aci_rule_conditions_t apply;
 
-    aci_rule_condition_t satisfy[CONDITIONS_LIMIT];
-
-    bool is_last;
+    aci_rule_conditions_t satisfy;
 }
 aci_rule_t;
+
+///
+/// @brief
+///
+typedef struct
+{
+    aci_rule_t items[RULES_COUNT_LIMIT];
+
+    size_t count;
+}
+aci_rules_t;
+
+///
+/// @brief
+/// @param dn
+/// @param operation
+/// @return
+///
+bool has_satisfied_dn_operation(const char* dn, const aci_rule_operation_t* operation);
+
+///
+/// @brief
+/// @param dn
+/// @param operation
+/// @return
+///
+bool has_satisfied_groups_operation(const char* groups, const aci_rule_operation_t* operation);
+
+///
+/// @brief
+/// @param dn
+/// @param operation
+/// @return
+///
+bool has_satisfied_ip_operation(const PRNetAddr* ip, const aci_rule_operation_t* operation);
+
+///
+/// @brief
+/// @param dn
+/// @param operation
+/// @return
+///
+bool has_satisfied_dns_operation(const PRNetAddr* dns, const aci_rule_operation_t* operation);
+
+///
+/// @brief
+/// @param dn
+/// @param operation
+/// @return
+///
+bool has_satisfied_time_operation(const uint32_t time, const aci_rule_operation_t* operation);
+
+///
+/// @brief
+/// @param dn
+/// @param operation
+/// @return
+///
+bool has_satisfied_weekday_operation(const uint32_t weekday, const aci_rule_operation_t* operation);
 
 #endif  // ACI_RULE_H

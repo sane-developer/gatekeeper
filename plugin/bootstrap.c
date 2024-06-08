@@ -1,10 +1,12 @@
 #include "plugin.h"
 
-bind_policy_t plugin_bind_policy = {0};
+aci_rules_t plugin_deny_aci_rules = {0};
 
-Slapi_ComponentId* plugin_identity = NULL;
+aci_rules_t plugin_grant_aci_rules = {0};
 
-Slapi_PluginDesc plugin_description = (Slapi_PluginDesc)
+Slapi_ComponentId* plugin_component_identity = NULL;
+
+Slapi_PluginDesc plugin_component_description = (Slapi_PluginDesc)
 {
     .spd_id = "gatekeeper",
     .spd_vendor = "sane-developer",
@@ -34,7 +36,7 @@ plugin_registration_status_t handle_plugin_registration(Slapi_PBlock* block)
         return abort_plugin_registration(block, PLUGIN_BIND_REQUEST_HANDLER_UNRESOLVED);
     }
 
-    if (!has_resolved_bind_policy(block, &plugin_bind_policy))
+    if (!has_resolved_plugin_bind_policy(block, &plugin_grant_aci_rules, &plugin_deny_aci_rules))
     {
         return abort_plugin_registration(block, PLUGIN_BIND_POLICY_UNRESOLVED);
     }

@@ -87,6 +87,7 @@ endif()
 #
 
 file(GLOB core_files
+    ./core/src/aci_rule/*.c
     ./core/src/bind_request/*.c
     ./core/src/plugin/*.c
 )

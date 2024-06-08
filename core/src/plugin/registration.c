@@ -2,12 +2,12 @@
 
 bool has_resolved_plugin_identity(Slapi_PBlock* block)
 {
-    return slapi_pblock_get(block, SLAPI_PLUGIN_IDENTITY, plugin_identity) == 0;
+    return slapi_pblock_get(block, SLAPI_PLUGIN_IDENTITY, plugin_component_identity) == 0;
 }
 
 bool has_resolved_plugin_description(Slapi_PBlock* block)
 {
-    return slapi_pblock_set(block, SLAPI_PLUGIN_DESCRIPTION, &plugin_description) == 0;
+    return slapi_pblock_set(block, SLAPI_PLUGIN_DESCRIPTION, &plugin_component_description) == 0;
 }
 
 bool has_resolved_plugin_ldap_protocol_version(Slapi_PBlock* block)
