@@ -137,5 +137,5 @@ target_link_libraries(gatekeeper_plugin PRIVATE
 
 target_compile_options(gatekeeper_plugin PRIVATE
     $<$<CONFIG:DEBUG>: -g -Wall -Wextra>
-    $<$<CONFIG:RELEASE>: -03 -Wall -Wextra>
+    $<$<CONFIG:RELEASE>: -03>
 )
