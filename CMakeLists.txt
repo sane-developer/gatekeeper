@@ -12,8 +12,6 @@ project(gatekeeper LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(CMAKE_C_COMPILER /usr/bin/gcc)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #
