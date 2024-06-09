@@ -9,7 +9,7 @@ static bool all(const char* groups, const aci_rule_operands_t* operands)
     {
         bool is_member_of_group = false;
 
-        char* required_group = operands->items[i].group;
+        char* required_group = operands->items[i].text;
 
         char* actual_group;
 
@@ -38,7 +38,7 @@ static bool any(const char* groups, const aci_rule_operands_t* operands)
 
     for (size_t i = 0; i < OPERANDS_COUNT_LIMIT; ++i)
     {
-        char* required_group = operands->items[i].group;
+        char* required_group = operands->items[i].text;
 
         char* actual_group;
 

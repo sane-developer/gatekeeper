@@ -2,17 +2,17 @@
 
 static bool after(uint32_t time, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].time < time;
+    return operands->items[0].integer < time;
 }
 
 static bool before(uint32_t time, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].time > time;
+    return operands->items[0].integer > time;
 }
 
 static bool between(uint32_t time, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].time <= time <= operands->items[1].time;
+    return operands->items[0].integer <= time && time <= operands->items[1].integer;
 }
 
 bool has_satisfied_time_operation(uint32_t time, const aci_rule_operation_t* operation)

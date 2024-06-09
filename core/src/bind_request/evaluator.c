@@ -27,8 +27,6 @@ static bool has_satisfied_condition(const bind_request_t* request, const aci_rul
 
     bool is_subcondition_satisfied = true;
 
-    bool skip_to_next_non_and_operator = false;
-
     aci_rule_operator_type_t current_operator = NOP;
 
     aci_rule_operator_type_t next_operator = NOP;
@@ -137,9 +135,9 @@ static bool has_applied_rule(const bind_request_t* request, const aci_rule_t* ru
 
 static bool has_satisfied_rule(Slapi_PBlock* block, const bind_request_t* request, const aci_rule_t* rule)
 {
-    for (size_t i = 0; i < rule->satisfy.count; ++i)
+    for (size_t i = 0; i < rule->trigger.count; ++i)
     {
-        const aci_rule_condition_t* condition = &rule->satisfy.items[i];
+        const aci_rule_condition_t* condition = &rule->trigger.items[i];
 
         if (!has_satisfied_condition(request, condition))
         {
@@ -159,9 +157,9 @@ static bool has_satisfied_rule(Slapi_PBlock* block, const bind_request_t* reques
 
 static bool has_triggered_rule(Slapi_PBlock* block, const bind_request_t* request, const aci_rule_t* rule)
 {
-    for (size_t i = 0; i < rule->satisfy.count; ++i)
+    for (size_t i = 0; i < rule->trigger.count; ++i)
     {
-        const aci_rule_condition_t* condition = &rule->satisfy.items[i];
+        const aci_rule_condition_t* condition = &rule->trigger.items[i];
 
         if (has_satisfied_condition(request, condition))
         {
@@ -170,6 +168,26 @@ static bool has_triggered_rule(Slapi_PBlock* block, const bind_request_t* reques
                 .request = request,
                 .violated_rule_label = &rule->label[0],
                 .violated_condition_label = &condition->label[0]
+            });
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool has_triggered_any_special_rule(Slapi_PBlock* block, const bind_request_t* request, const aci_rules_t* rules)
+{
+    for (size_t i = 0; i < rules->count; ++i)
+    {
+        const aci_rule_t* rule = &rules->items[i];
+
+        if (has_applied_rule(request, rule) && has_satisfied_rule(block, request, rule))
+        {
+            on_bind_request_granted((on_bind_request_granted_event_args_t) {
+                .block = block,
+                .request = request
             });
 
             return true;

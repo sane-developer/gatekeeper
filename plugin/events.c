@@ -1,4 +1,5 @@
-#include "plugin.h"
+#include "bind_request.h"
+#include "plugin_registration.h"
 
 void on_plugin_registration_finished(on_plugin_registration_finished_event_args_t args)
 {

@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.20)
 project(gatekeeper LANGUAGES C)
 
 #
-#  Configures the compiler flags.
+#  Configures the compiler.
 #
 
 set(CMAKE_C_STANDARD 11)
@@ -87,9 +87,9 @@ endif()
 #
 
 file(GLOB core_files
+    ./core/src/*.c
     ./core/src/aci_rule/*.c
     ./core/src/bind_request/*.c
-    ./core/src/plugin/*.c
 )
 
 add_library(gatekeeper_core SHARED
@@ -114,6 +114,11 @@ target_link_libraries(gatekeeper_core PUBLIC
     ${LIB_SASL2}
 )
 
+target_compile_options(gatekeeper_core PRIVATE
+    $<$<CONFIG:DEBUG>: -g -Wall -Wextra>
+    $<$<CONFIG:RELEASE>: -03 -Wall -Wextra>
+)
+
 #
 #  Builds the plugin.
 #
@@ -128,4 +133,9 @@ add_library(gatekeeper_plugin SHARED
 
 target_link_libraries(gatekeeper_plugin PRIVATE
     gatekeeper_core
+)
+
+target_compile_options(gatekeeper_plugin PRIVATE
+    $<$<CONFIG:DEBUG>: -g -Wall -Wextra>
+    $<$<CONFIG:RELEASE>: -03 -Wall -Wextra>
 )

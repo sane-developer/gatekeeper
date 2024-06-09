@@ -103,6 +103,23 @@ void on_bind_request_unresolved(on_bind_request_unresolved_event_args_t args);
 /// @brief
 /// @param block
 /// @param request
+/// @return
+///
+bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request);
+
+///
+/// @brief
+/// @param block
+/// @param request
+/// @param rules
+/// @return
+///
+bool has_triggered_any_special_rule(Slapi_PBlock* block, const bind_request_t* request, const aci_rules_t* rules);
+
+///
+/// @brief
+/// @param block
+/// @param request
 /// @param rules
 /// @return
 ///
@@ -119,16 +136,16 @@ bool has_triggered_any_deny_rule(Slapi_PBlock* block, const bind_request_t* requ
 
 ///
 /// @brief
-/// @param block
 /// @param request
 /// @return
 ///
-bind_request_status_t has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request);
+bind_request_status_t grant_bind_request(bind_request_t* request);
 
 ///
 /// @brief
 /// @param request
+/// @return
 ///
-void dispose_bind_request(bind_request_t* request);
+bind_request_status_t deny_bind_request(bind_request_t* request);
 
 #endif  // BIND_REQUEST_H

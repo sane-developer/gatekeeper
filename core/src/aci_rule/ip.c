@@ -2,12 +2,12 @@
 
 static bool between(const PRNetAddr* ip, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].ip <= ip->inet.ip <= operands->items[1].ip;
+    return operands->items[0].integer <= ip->inet.ip && ip->inet.ip <= operands->items[1].integer;
 }
 
 static bool equals(const PRNetAddr* ip, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].ip == ip->inet.ip;
+    return operands->items[0].integer == ip->inet.ip;
 }
 
 bool has_satisfied_ip_operation(const PRNetAddr* ip, const aci_rule_operation_t* operation)

@@ -64,11 +64,11 @@ aci_rule_operation_type_t;
 ///
 typedef enum
 {
-    NOP,
-
     AND,
 
-    OR
+    OR,
+
+    NOP
 }
 aci_rule_operator_type_t;
 
@@ -96,17 +96,9 @@ aci_rule_operand_type_t;
 ///
 typedef union
 {
-    char* dn;
+    char* text;
 
-    char* group;
-
-    uint32_t ip;
-
-    uint32_t dns;
-
-    uint32_t time;
-
-    uint32_t weekday;
+    uint32_t integer;
 }
 aci_rule_operand_t;
 
@@ -180,7 +172,7 @@ typedef struct
 
     aci_rule_conditions_t apply;
 
-    aci_rule_conditions_t satisfy;
+    aci_rule_conditions_t trigger;
 }
 aci_rule_t;
 

@@ -2,22 +2,22 @@
 
 static bool after(uint32_t weekday, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].weekday < weekday;
+    return operands->items[0].integer < weekday;
 }
 
 static bool before(uint32_t weekday, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].weekday > weekday;
+    return operands->items[0].integer > weekday;
 }
 
 static bool between(uint32_t weekday, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].weekday <= weekday <= operands->items[1].weekday;
+    return operands->items[0].integer <= weekday && weekday <= operands->items[1].integer;
 }
 
 static bool equals(uint32_t weekday, const aci_rule_operands_t* operands)
 {
-    return operands->items[0].weekday == weekday;
+    return operands->items[0].integer == weekday;
 }
 
 bool has_satisfied_weekday_operation(uint32_t weekday, const aci_rule_operation_t* operation)

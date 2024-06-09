@@ -1,13 +1,13 @@
-#include "plugin.h"
+#include "plugin_registration.h"
 
-bool has_resolved_plugin_identity(Slapi_PBlock* block)
+bool has_resolved_plugin_identity(Slapi_PBlock* block, Slapi_ComponentId* identity)
 {
-    return slapi_pblock_get(block, SLAPI_PLUGIN_IDENTITY, plugin_component_identity) == 0;
+    return slapi_pblock_get(block, SLAPI_PLUGIN_IDENTITY, identity) == 0;
 }
 
-bool has_resolved_plugin_description(Slapi_PBlock* block)
+bool has_resolved_plugin_description(Slapi_PBlock* block, Slapi_PluginDesc* description)
 {
-    return slapi_pblock_set(block, SLAPI_PLUGIN_DESCRIPTION, &plugin_component_description) == 0;
+    return slapi_pblock_set(block, SLAPI_PLUGIN_DESCRIPTION, description) == 0;
 }
 
 bool has_resolved_plugin_ldap_protocol_version(Slapi_PBlock* block)
@@ -15,9 +15,9 @@ bool has_resolved_plugin_ldap_protocol_version(Slapi_PBlock* block)
     return slapi_pblock_set(block, SLAPI_PLUGIN_VERSION, SLAPI_PLUGIN_VERSION_03) == 0;
 }
 
-bool has_resolved_plugin_bind_request_handler(Slapi_PBlock* block)
+bool has_resolved_plugin_bind_request_handler(Slapi_PBlock* block, plugin_bind_request_handler_t handler)
 {
-    return slapi_pblock_set(block, SLAPI_PLUGIN_PRE_BIND_FN, handle_bind_request) == 0;
+    return slapi_pblock_set(block, SLAPI_PLUGIN_PRE_BIND_FN, handler) == 0;
 }
 
 plugin_registration_status_t finish_plugin_registration(Slapi_PBlock* block)

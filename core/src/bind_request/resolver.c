@@ -1,5 +1,13 @@
 #include "bind_request.h"
 
+static void dispose_bind_request(bind_request_t* request)
+{
+    if (request->groups)
+    {
+        slapi_ch_free_string(&request->groups);
+    }
+}
+
 static bool has_resolved_client_dn(Slapi_PBlock* block, bind_request_t* request)
 {
     return slapi_pblock_get(block, SLAPI_BIND_TARGET, request->dn) == 0;
@@ -33,7 +41,7 @@ static void resolve_request_datetime(bind_request_t* request)
     request->weekday = datetime.tm_wday;
 }
 
-bind_request_status_t has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request)
+bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request)
 {
     if (!has_resolved_client_dn(block, request))
     {
@@ -84,10 +92,16 @@ bind_request_status_t has_resolved_bind_request(Slapi_PBlock* block, bind_reques
     return true;
 }
 
-void dispose_bind_request(bind_request_t* request)
+bind_request_status_t grant_bind_request(bind_request_t* request)
 {
-    if (request->groups)
-    {
-        slapi_ch_free_string(&request->groups);
-    }
+    dispose_bind_request(request);
+
+    return REQUEST_GRANTED;
+}
+
+bind_request_status_t deny_bind_request(bind_request_t* request)
+{
+    dispose_bind_request(request);
+
+    return REQUEST_DENIED;
 }

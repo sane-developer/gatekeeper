@@ -1,28 +1,8 @@
-#ifndef PLUGIN_H
-#define PLUGIN_H
+#ifndef PLUGIN_REGISTRATION_H
+#define PLUGIN_REGISTRATION_H
 
-#include "aci_rule.h"
+#include "bind_policy.h"
 #include "bind_request.h"
-
-///
-/// @brief
-///
-extern aci_rules_t plugin_deny_aci_rules;
-
-///
-/// @brief
-///
-extern aci_rules_t plugin_grant_aci_rules;
-
-///
-/// @brief
-///
-extern Slapi_ComponentId* plugin_component_identity;
-
-///
-/// @brief
-///
-extern Slapi_PluginDesc plugin_component_description;
 
 ///
 /// @brief
@@ -67,6 +47,13 @@ on_plugin_registration_aborted_event_args_t;
 
 ///
 /// @brief
+/// @param block
+/// @return
+///
+typedef bind_request_status_t (*plugin_bind_request_handler_t)(Slapi_PBlock* block);
+
+///
+/// @brief
 /// @param args
 ///
 void on_plugin_registration_finished(on_plugin_registration_finished_event_args_t args);
@@ -80,16 +67,18 @@ void on_plugin_registration_aborted(on_plugin_registration_aborted_event_args_t 
 ///
 /// @brief
 /// @param block
+/// @param identity
 /// @return
 ///
-bool has_resolved_plugin_identity(Slapi_PBlock* block);
+bool has_resolved_plugin_identity(Slapi_PBlock* block, Slapi_ComponentId* identity);
 
 ///
 /// @brief
 /// @param block
+/// @param description
 /// @return
 ///
-bool has_resolved_plugin_description(Slapi_PBlock* block);
+bool has_resolved_plugin_description(Slapi_PBlock* block, Slapi_PluginDesc* description);
 
 ///
 /// @brief
@@ -103,16 +92,15 @@ bool has_resolved_plugin_ldap_protocol_version(Slapi_PBlock* block);
 /// @param block
 /// @return
 ///
-bool has_resolved_plugin_bind_request_handler(Slapi_PBlock* block);
+bool has_resolved_plugin_bind_request_handler(Slapi_PBlock* block, plugin_bind_request_handler_t handler);
 
 ///
 /// @brief
 /// @param block
-/// @param grant_rules
-/// @param deny_rules
+/// @param policy
 /// @return
 ///
-bool has_resolved_plugin_bind_policy(Slapi_PBlock* block, aci_rules_t* grant_rules, aci_rules_t* deny_rules);
+bool has_resolved_plugin_bind_policy(Slapi_PBlock* block, bind_policy_t* policy);
 
 ///
 /// @brief
@@ -129,18 +117,4 @@ plugin_registration_status_t finish_plugin_registration(Slapi_PBlock* block);
 ///
 plugin_registration_status_t abort_plugin_registration(Slapi_PBlock* block, plugin_registration_status_t error);
 
-///
-/// @brief
-/// @param block
-/// @return
-///
-plugin_registration_status_t handle_plugin_registration(Slapi_PBlock* block);
-
-///
-/// @brief
-/// @param block
-/// @return
-///
-bind_request_status_t handle_bind_request(Slapi_PBlock* block);
-
-#endif  // PLUGIN_H
+#endif  // PLUGIN_REGISTRATION_H
