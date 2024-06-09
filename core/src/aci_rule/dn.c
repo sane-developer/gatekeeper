@@ -4,7 +4,7 @@
 
 static bool matches(const char* dn, const aci_rule_operands_t* operands)
 {
-    char* pattern = operands->items[0].text;
+    const char* pattern = operands->items[0].text;
 
     Slapi_Regex* handler = slapi_re_comp(pattern, NULL);
 
@@ -22,7 +22,7 @@ static bool equals(const char* dn, const aci_rule_operands_t* operands)
 
 static bool starts_with(const char* dn, const aci_rule_operands_t* operands)
 {
-    char* target = operands->items[0].text;
+    const char* target = operands->items[0].text;
 
     size_t target_length = strlen(target);
 
@@ -31,7 +31,7 @@ static bool starts_with(const char* dn, const aci_rule_operands_t* operands)
 
 static bool ends_with(const char* dn, const aci_rule_operands_t* operands)
 {
-    char* target = operands->items[0].text;
+    const char* target = operands->items[0].text;
 
     size_t source_length = strlen(dn);
 

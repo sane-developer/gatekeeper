@@ -37,6 +37,11 @@
 ///
 /// @brief
 ///
+#define OPERAND_TEXT_LENGTH_LIMIT 256
+
+///
+/// @brief
+///
 typedef enum
 {
     SUNDAY,
@@ -117,7 +122,7 @@ aci_rule_operand_type_t;
 ///
 typedef union
 {
-    char* text;
+    char text[OPERAND_TEXT_LENGTH_LIMIT];
 
     uint32_t integer;
 }
