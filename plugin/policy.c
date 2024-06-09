@@ -1,23 +1,5 @@
 #include "plugin_registration.h"
 
-typedef enum
-{
-    SUNDAY,
-
-    MONDAY,
-
-    TUESDAY,
-
-    WEDNESDAY,
-
-    THURSDAY,
-
-    FRIDAY,
-
-    SATURDAY
-}
-weekday_t;
-
 static void skip_directory_manager_while_connecting_from_office(aci_rules_t* rules)
 {
     configure_rule(rules, "skip directory manager while connecting from office");

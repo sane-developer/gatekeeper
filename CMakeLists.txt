@@ -12,6 +12,8 @@ project(gatekeeper LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 
+set(CMAKE_C_COMPILER /usr/bin/gcc)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #
@@ -116,7 +118,7 @@ target_link_libraries(gatekeeper_core PUBLIC
 
 target_compile_options(gatekeeper_core PRIVATE
     $<$<CONFIG:DEBUG>: -g -Wall -Wextra>
-    $<$<CONFIG:RELEASE>: -03 -Wall -Wextra>
+    $<$<CONFIG:RELEASE>: -03>
 )
 
 #

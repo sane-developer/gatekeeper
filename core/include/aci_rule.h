@@ -39,6 +39,27 @@
 ///
 typedef enum
 {
+    SUNDAY,
+
+    MONDAY,
+
+    TUESDAY,
+
+    WEDNESDAY,
+
+    THURSDAY,
+
+    FRIDAY,
+
+    SATURDAY
+}
+weekday_t;
+
+///
+/// @brief
+///
+typedef enum
+{
     ALL,
 
     ANY,

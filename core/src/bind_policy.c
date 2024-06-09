@@ -1,68 +1,68 @@
 #include "bind_policy.h"
 #include <string.h>
 
-size_t* rule_count;
+size_t* rules_count;
 
 aci_rule_t* rule;
 
-aci_rule_condition_t* condition;
+aci_rule_condition_t* rule_condition;
 
-aci_rule_operation_t* operation;
+aci_rule_operation_t* rule_operation;
 
 void configure_rule(aci_rules_t* rules, const char* label)
 {
     rule = &rules->items[rules->count];
 
-    rule_count = &rules->count;
+    rules_count = &rules->count;
 
     strcpy(rule->label, label);
 }
 
 void configure_exclude_condition(const char* label)
 {
-    condition = &rule->exclude.items[rule->exclude.count];
+    rule_condition = &rule->exclude.items[rule->exclude.count];
 
-    strcpy(condition->label, label);
+    strcpy(rule_condition->label, label);
 }
 
 void configure_apply_condition(const char* label)
 {
-    condition = &rule->apply.items[rule->apply.count];
+    rule_condition = &rule->apply.items[rule->apply.count];
 
-    strcpy(condition->label, label);
+    strcpy(rule_condition->label, label);
 }
 
 void configure_trigger_condition(const char* label)
 {
-    condition = &rule->trigger.items[rule->trigger.count];
+    rule_condition = &rule->trigger.items[rule->trigger.count];
 
-    strcpy(condition->label, label);
+    strcpy(rule_condition->label, label);
 }
 
-void configure_operation(aci_rule_operand_type_t operand_type, aci_rule_operation_type_t operation_type, aci_rule_operator_type_t operator_type)
+void configure_operation(aci_rule_operand_type_t operand, aci_rule_operation_type_t operation, aci_rule_operator_type_t operator)
 {
-    operation = &condition->operations.items[condition->operations.count];
+    rule_operation = &rule_condition->operations.items[rule_condition->operations.count];
 
-    operation->operation_type = operation_type;
+    rule_operation->operation_type = operation;
 
-    operation->operator_type = operator_type;
+    rule_operation->operator_type = operator;
 
-    operation->operand_type = operand_type;
+    rule_operation->operand_type = operand;
 }
 
 void set_integer_operand(uint32_t operand)
 {
-    operation->operands.items[operation->operands.count++].integer = operand;
+    rule_operation->operands.items[rule_operation->operands.count++].integer = operand;
 }
 
 void set_text_operand(const char* operand)
 {
-    strcpy(operation->operands.items[operation->operands.count++].text, operand);
+    strcpy(rule_operation->operands.items[rule_operation->operands.count++].text, operand);
 }
 
 void register_rule()
 {
-    *rule_count += 1;
+    *rules_count += 1;
 }
 
 void register_exclude_condition()
@@ -82,5 +82,5 @@ void register_trigger_condition()
 
 void register_operation()
 {
-    condition->operations.count++;
+    rule_condition->operations.count++;
 }

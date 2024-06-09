@@ -17,9 +17,9 @@ cd build
 #
 
 if [[ "$1" == "-d" ]] ; then
-  cmake -DCMAKE_BUILD_TYPE=Debug ..
+  cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_C_COMPILER=/usr/bin/gcc ..
 else
-  cmake -DCMAKE_BUILD_TYPE=Release ..
+  cmake -DCMAKE_BUILD_TYPE=RELEASE-DCMAKE_C_COMPILER=/usr/bin/gcc ..
 fi
 
 #
