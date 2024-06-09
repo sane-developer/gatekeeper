@@ -4,7 +4,7 @@ static void dispose_bind_request(bind_request_t* request)
 {
     if (request->groups)
     {
-        slapi_ch_free_string(&request->groups);
+        slapi_ch_array_free(request->groups);
     }
 }
 
@@ -23,9 +23,43 @@ static bool has_resolved_client_dns(Slapi_PBlock* block, bind_request_t* request
     return slapi_pblock_get(block, SLAPI_CONN_SERVERNETADDR, request->dns) == 0;
 }
 
-static bool has_resolved_client_groups(Slapi_PBlock* block, bind_request_t* request)
+static bool has_resolved_client_groups(Slapi_PBlock* block, bind_request_t* request, Slapi_ComponentId* identity)
 {
-    return true; // TODO: Resolve LDAP client groups.
+    Slapi_Entry* user_entry;
+
+    Slapi_DN* user_dn = slapi_sdn_new_dn_byval(request->dn);
+
+    char* attributes[] = { "memberOf", NULL };
+
+    int code = slapi_search_internal_get_entry(user_dn, attributes, &user_entry, identity);
+
+    if (code != LDAP_SUCCESS)
+    {
+        slapi_sdn_free(&user_dn);
+
+        slapi_entry_free(user_entry);
+
+        return false;
+    }
+
+    char** groups = slapi_entry_attr_get_charray(user_entry, "memberOf");
+
+    if (!groups)
+    {
+        slapi_sdn_free(&user_dn);
+
+        slapi_entry_free(user_entry);
+
+        return false;
+    }
+
+    slapi_sdn_free(&user_dn);
+
+    slapi_entry_free(user_entry);
+
+    request->groups = &groups[0];
+
+    return true;
 }
 
 static void resolve_request_datetime(bind_request_t* request)
@@ -41,7 +75,7 @@ static void resolve_request_datetime(bind_request_t* request)
     request->weekday = datetime.tm_wday;
 }
 
-bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request)
+bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request, Slapi_ComponentId* identity)
 {
     if (!has_resolved_client_dn(block, request))
     {
@@ -76,7 +110,7 @@ bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request)
         return false;
     }
 
-    if (!has_resolved_client_groups(block, request))
+    if (!has_resolved_client_groups(block, request, identity))
     {
         on_bind_request_unresolved((on_bind_request_unresolved_event_args_t) {
             .block = block,

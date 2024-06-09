@@ -223,15 +223,15 @@ bool has_satisfied_dn_operation(const char* dn, const aci_rule_operation_t* oper
 
 ///
 /// @brief
-/// @param dn
+/// @param groups
 /// @param operation
 /// @return
 ///
-bool has_satisfied_groups_operation(const char* groups, const aci_rule_operation_t* operation);
+bool has_satisfied_groups_operation(char** groups, const aci_rule_operation_t* operation);
 
 ///
 /// @brief
-/// @param dn
+/// @param ip
 /// @param operation
 /// @return
 ///
@@ -239,7 +239,7 @@ bool has_satisfied_ip_operation(const PRNetAddr* ip, const aci_rule_operation_t*
 
 ///
 /// @brief
-/// @param dn
+/// @param dns
 /// @param operation
 /// @return
 ///
@@ -247,7 +247,7 @@ bool has_satisfied_dns_operation(const PRNetAddr* dns, const aci_rule_operation_
 
 ///
 /// @brief
-/// @param dn
+/// @param time
 /// @param operation
 /// @return
 ///
@@ -255,7 +255,7 @@ bool has_satisfied_time_operation(const uint32_t time, const aci_rule_operation_
 
 ///
 /// @brief
-/// @param dn
+/// @param weekday
 /// @param operation
 /// @return
 ///

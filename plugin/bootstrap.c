@@ -16,7 +16,7 @@ bind_request_status_t handle_bind_request(Slapi_PBlock* block)
 {
     bind_request_t request = {0};
 
-    if (!has_resolved_bind_request(block, &request))
+    if (!has_resolved_bind_request(block, &request, plugin_component_identity))
     {
         return deny_bind_request(&request);
     }

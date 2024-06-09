@@ -30,7 +30,7 @@ typedef struct
 {
     char* dn;
 
-    char* groups;
+    char** groups;
 
     PRNetAddr* ip;
 
@@ -103,9 +103,10 @@ void on_bind_request_unresolved(on_bind_request_unresolved_event_args_t args);
 /// @brief
 /// @param block
 /// @param request
+/// @param identity
 /// @return
 ///
-bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request);
+bool has_resolved_bind_request(Slapi_PBlock* block, bind_request_t* request, Slapi_ComponentId* identity);
 
 ///
 /// @brief

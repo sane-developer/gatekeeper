@@ -1,29 +1,23 @@
 #include "aci_rule.h"
 #include <string.h>
 
-static bool all(const char* groups, const aci_rule_operands_t* operands)
+static bool all(char** groups, const aci_rule_operands_t* operands)
 {
-    char* tokens = (char*) groups;
-
-    for (size_t i = 0; i < OPERANDS_COUNT_LIMIT; ++i)
+    for (size_t i = 0; i < operands->count; ++i)
     {
-        bool is_member_of_group = false;
+        bool is_member = false;
 
-        const char* required_group = operands->items[i].text;
-
-        char* actual_group;
-
-        while ((actual_group = strtok_r(tokens, ",", &tokens)))
+        for (size_t j = 0; groups[j]; ++j)
         {
-            if (strcmp(actual_group, required_group) == 0)
+            if (strcmp(operands->items[i].text, groups[j]) == 0)
             {
-                is_member_of_group = true;
+                is_member = true;
 
                 break;
             }
         }
 
-        if (!is_member_of_group)
+        if (!is_member)
         {
             return false;
         }
@@ -32,19 +26,13 @@ static bool all(const char* groups, const aci_rule_operands_t* operands)
     return true;
 }
 
-static bool any(const char* groups, const aci_rule_operands_t* operands)
+static bool any(char** groups, const aci_rule_operands_t* operands)
 {
-    char* tokens = (char*) groups;
-
-    for (size_t i = 0; i < OPERANDS_COUNT_LIMIT; ++i)
+    for (size_t i = 0; i < operands->count; ++i)
     {
-        const char* required_group = operands->items[i].text;
-
-        char* actual_group;
-
-        while ((actual_group = strtok_r(tokens, ",", &tokens)))
+        for (size_t j = 0; groups[j]; ++j)
         {
-            if (strcmp(actual_group, required_group) == 0)
+            if (strcmp(operands->items[i].text, groups[j]) == 0)
             {
                 return true;
             }
@@ -54,7 +42,7 @@ static bool any(const char* groups, const aci_rule_operands_t* operands)
     return false;
 }
 
-bool has_satisfied_groups_operation(const char* groups, const aci_rule_operation_t* operation)
+bool has_satisfied_groups_operation(char** groups, const aci_rule_operation_t* operation)
 {
     switch (operation->operation_type)
     {
