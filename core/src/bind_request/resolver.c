@@ -37,8 +37,6 @@ static bool has_resolved_client_groups(Slapi_PBlock* block, bind_request_t* requ
     {
         slapi_sdn_free(&user_dn);
 
-        slapi_entry_free(user_entry);
-
         return false;
     }
 
@@ -57,7 +55,7 @@ static bool has_resolved_client_groups(Slapi_PBlock* block, bind_request_t* requ
 
     slapi_entry_free(user_entry);
 
-    request->groups = &groups[0];
+    request->groups = groups;
 
     return true;
 }

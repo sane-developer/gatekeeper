@@ -1,6 +1,14 @@
 #!/bin/bash
 
 #
+#  Removes existing build related directories.
+#
+
+rm -rf .cache/
+
+rm -rf build/
+
+#
 #  Creates build directory for the plugin.
 #
 
@@ -10,7 +18,7 @@ mkdir -p build
 #  Moves to the build directory of the plugin.
 #
 
-cd build
+cd build/
 
 #
 #  Builds CMake into Makefile.
